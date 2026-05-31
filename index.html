@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PosSizer">
+<meta name="theme-color" id="themeColorMeta" content="#0C447C">
+<meta name="description" content="Risk engine and reward matrix for Indian derivatives trading">
+
+<title>Position Sizer Pro</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --bg-page:#f0f4f8; --bg-card:#ffffff; --bg-secondary:#f8fafc;
+  --bg-input:#ffffff; --text-primary:#0f172a; --text-secondary:#64748b;
+  --text-muted:#94a3b8; --border:rgba(15,23,42,0.10); --border-strong:rgba(15,23,42,0.18);
+  --blue-bg:#E6F1FB; --blue-mid:#378ADD; --blue-dark:#185FA5; --blue-darker:#0C447C;
+  --red-bg:#FCEBEB; --red-border:#F7C1C1; --red-mid:#A32D2D; --red-dark:#791F1F;
+  --green-mid:#1D9E75; --shadow-card:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.05); --radius-sm:6px; --radius-md:10px;
+  --radius-lg:14px; --radius-xl:18px; --tr:0.2s ease;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+[data-theme="dark"] {
+  --bg-page:#080d14; --bg-card:#111827; --bg-secondary:#1a2335;
+  --bg-input:#0f172a; --text-primary:#f1f5f9; --text-secondary:#94a3b8;
+  --text-muted:#64748b; --border:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.14);
+  --blue-bg:#0c1e35; --blue-mid:#378ADD; --blue-dark:#60a5fa; --blue-darker:#1e3a5f;
+  --red-bg:#1f0a0a; --red-border:#3f1515; --red-mid:#f87171; --red-dark:#fca5a5;
+  --green-mid:#34d399; --shadow-card:0 1px 3px rgba(0,0,0,0.3),0 4px 24px rgba(0,0,0,0.2);
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.2);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+html { height: 100%; }
+
+body {
+  font-family:'Sora',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg-page); color:var(--text-primary);
+  min-height:100vh; min-height:100dvh;
+  padding: calc(var(--safe-top) + 0px) 0 calc(var(--safe-bot) + 16px);
+  transition:background var(--tr),color var(--tr);
+  overscroll-behavior-y: none;
+}
+
+/* ── APP SHELL ── */
+.app-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--blue-darker);
+  padding: calc(var(--safe-top) + 12px) 16px 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+
+.header-brand { display:flex; align-items:center; gap:10px; }
+.header-icon {
+  width:34px; height:34px; border-radius:9px;
+  background:rgba(255,255,255,0.15);
+  display:flex; align-items:center; justify-content:center;
+}
+.header-icon i { font-size:17px; color:#bfdbfe; }
+.header-title { font-size:17px; font-weight:600; color:#fff; letter-spacing:-0.3px; }
+.header-sub { font-size:10px; color:rgba(255,255,255,0.6); margin-top:1px; }
+
+.header-actions { display:flex; align-items:center; gap:8px; }
+
+.hdr-btn {
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.85);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:15px; transition:all var(--tr);
+}
+.hdr-btn:hover { background:rgba(255,255,255,0.2); color:#fff; }
+
+.version-chip {
+  font-family:'DM Mono',monospace; font-size:10px; font-weight:500;
+  padding:3px 9px; border-radius:20px;
+  background:rgba(255,255,255,0.15); color:rgba(255,255,255,0.85);
+  border:1px solid rgba(255,255,255,0.2);
+}
+
+/* ── INSTALL BANNER ── */
+.install-banner {
+  margin:12px 16px 0; padding:12px 14px;
+  background:var(--blue-bg); border:1px solid var(--border-strong);
+  border-radius:var(--radius-md); display:flex; align-items:center; gap:10px;
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.install-banner i { font-size:18px; color:var(--blue-dark); flex-shrink:0; }
+.install-text { flex:1; font-size:12px; color:var(--text-primary); line-height:1.4; }
+.install-text strong { font-weight:600; display:block; margin-bottom:1px; }
+.install-btn {
+  padding:7px 13px; border-radius:var(--radius-sm);
+  background:var(--blue-darker); color:#fff;
+  border:none; font-size:12px; font-weight:600;
+  font-family:'Sora',sans-serif; cursor:pointer;
+  white-space:nowrap; transition:opacity var(--tr);
+}
+.install-btn:hover { opacity:0.85; }
+.install-close {
+  width:24px; height:24px; border:none; background:none;
+  color:var(--text-muted); cursor:pointer; font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:4px; flex-shrink:0;
+}
+
+/* ── SCROLL AREA ── */
+.scroll-area {
+  padding:14px 16px 24px;
+  display:flex; flex-direction:column; gap:10px;
+}
+
+/* ── CARDS ── */
+.card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-xl); padding:16px 18px;
+  box-shadow:var(--shadow-card);
+  transition:background var(--tr),border-color var(--tr);
+}
+.card-title {
+  font-size:10px; font-weight:600; text-transform:uppercase;
+  letter-spacing:0.08em; color:var(--text-muted);
+  display:flex; align-items:center; gap:6px;
+  margin-bottom:13px; padding-bottom:9px;
+  border-bottom:1px solid var(--border);
+}
+.card-title i { font-size:12px; color:var(--blue-mid); }
+
+/* ── SEGMENT ── */
+.seg {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  background:var(--bg-secondary); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:3px; gap:2px; margin-bottom:13px;
+}
+.seg-btn {
+  padding:8px 4px; border:none; background:transparent;
+  border-radius:var(--radius-sm); font-size:11px; font-weight:500;
+  font-family:'Sora',sans-serif; color:var(--text-secondary);
+  cursor:pointer; text-align:center; line-height:1.3; transition:all var(--tr);
+  -webkit-tap-highlight-color:transparent;
+}
+.seg-btn span { display:block; font-family:'DM Mono',monospace; font-size:10px; margin-top:1px; opacity:0.7; }
+.seg-btn.active { background:var(--blue-darker); color:#bfdbfe; box-shadow:0 1px 4px rgba(12,68,124,0.4); }
+.seg-btn:not(.active):hover { background:var(--bg-card); color:var(--text-primary); }
+
+/* ── INPUTS ── */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.span-2 { grid-column:span 2; }
+.field { display:flex; flex-direction:column; gap:5px; }
+.field-label {
+  font-size:11px; font-weight:500; color:var(--text-secondary);
+  letter-spacing:0.02em; display:flex; align-items:center; gap:5px;
+}
+.field-label i { font-size:12px; color:var(--blue-mid); }
+
+input[type="number"], select {
+  width:100%; padding:10px 12px;
+  border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+  font-size:15px; font-family:'DM Mono',monospace; font-weight:400;
+  outline:none; background:var(--bg-input); color:var(--text-primary);
+  transition:border-color var(--tr),box-shadow var(--tr),background var(--tr);
+  -moz-appearance:textfield; -webkit-appearance:none; appearance:none;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { opacity:0; }
+input[type="number"]:focus, select:focus {
+  border-color:var(--blue-mid); box-shadow:0 0 0 3px rgba(55,138,221,0.15);
+}
+input[type="number"]:disabled { opacity:0.4; cursor:not-allowed; }
+select { cursor:pointer; font-family:'Sora',sans-serif; font-size:14px; }
+
+/* ── SL BADGE ── */
+.sl-badge {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--red-bg); border:1px solid var(--red-border);
+  border-radius:var(--radius-md); padding:12px 14px; margin-top:10px;
+  animation:fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+.sl-badge-left { display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:var(--red-mid); }
+.sl-badge-left i { font-size:14px; }
+.sl-badge-right { display:flex; align-items:center; gap:8px; }
+.sl-price-val { font-family:'DM Mono',monospace; font-size:18px; font-weight:500; color:var(--red-dark); }
+.sl-dir-pill { font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; background:var(--red-border); color:var(--red-mid); }
+
+/* ── METRICS ── */
+.metrics { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.metric {
+  background:var(--bg-secondary); border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:12px 14px;
+  position:relative; overflow:hidden; transition:background var(--tr);
+}
+.metric::after {
+  content:''; position:absolute; bottom:0; left:0; right:0;
+  height:2px; border-radius:0 0 var(--radius-md) var(--radius-md);
+}
+.metric.m-blue::after  { background:var(--blue-mid); }
+.metric.m-red::after   { background:var(--red-mid); }
+.metric.m-gray::after  { background:var(--border-strong); }
+.metric-label { font-size:11px; color:var(--text-secondary); font-weight:500; margin-bottom:5px; }
+.metric-val { font-family:'DM Mono',monospace; font-size:17px; font-weight:500; color:var(--text-primary); }
+.metric.m-blue .metric-val { color:var(--blue-dark); }
+.metric.m-red  .metric-val { color:var(--red-mid); }
+
+/* ── TABLE ── */
+.tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+table { width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; min-width:300px; }
+th {
+  font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;
+  color:var(--text-muted); padding:0 8px 9px; text-align:left;
+  border-bottom:1px solid var(--border);
+}
+td { padding:10px 8px; border-bottom:1px solid var(--border); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+.rr-pill {
+  display:inline-block; font-family:'DM Mono',monospace;
+  font-size:12px; font-weight:500; padding:3px 9px; border-radius:20px;
+}
+.mono { font-family:'DM Mono',monospace; }
+.bar-wrap { height:4px; background:var(--border); border-radius:2px; overflow:hidden; margin-top:3px; }
+.bar-fill { height:100%; border-radius:2px; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); }
+
+.rr1 .rr-pill{background:#E1F5EE;color:#0F6E56} .rr1 .bar-fill{background:#1D9E75} .rr1 .profit{color:#0F6E56}
+.rr2 .rr-pill{background:#EAF3DE;color:#3B6D11} .rr2 .bar-fill{background:#639922} .rr2 .profit{color:#3B6D11}
+.rr3 .rr-pill{background:#E6F1FB;color:#185FA5} .rr3 .bar-fill{background:#378ADD} .rr3 .profit{color:#185FA5}
+.rr4 .rr-pill{background:#FAEEDA;color:#854F0B} .rr4 .bar-fill{background:#EF9F27} .rr4 .profit{color:#854F0B}
+.rr5 .rr-pill{background:#EEEDFE;color:#534AB7} .rr5 .bar-fill{background:#7F77DD} .rr5 .profit{color:#534AB7}
+
+[data-theme="dark"] .rr1 .rr-pill{background:#071a12;color:#6ee7b7} [data-theme="dark"] .rr1 .profit{color:#6ee7b7}
+[data-theme="dark"] .rr2 .rr-pill{background:#0d1f06;color:#86efac} [data-theme="dark"] .rr2 .profit{color:#86efac}
+[data-theme="dark"] .rr3 .rr-pill{background:#0c1e35;color:#93c5fd} [data-theme="dark"] .rr3 .profit{color:#93c5fd}
+[data-theme="dark"] .rr4 .rr-pill{background:#1c1002;color:#fcd34d} [data-theme="dark"] .rr4 .profit{color:#fcd34d}
+[data-theme="dark"] .rr5 .rr-pill{background:#12102a;color:#c4b5fd} [data-theme="dark"] .rr5 .profit{color:#c4b5fd}
+
+/* ── FOOTER ── */
+.footer {
+  font-size:11px; color:var(--text-muted); text-align:center;
+  display:flex; align-items:center; justify-content:center; gap:5px; padding:0 16px;
+}
+
+/* ── OFFLINE TOAST ── */
+.toast {
+  position:fixed; bottom:calc(var(--safe-bot) + 20px); left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:#1e293b; color:#f1f5f9; padding:10px 18px;
+  border-radius:20px; font-size:13px; font-weight:500;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3); z-index:999;
+  transition:transform 0.3s ease; white-space:nowrap;
+  display:flex; align-items:center; gap:7px;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- APP HEADER -->
+<header class="app-header">
+  <div class="header-brand">
+    <div class="header-icon"><i class="fa-solid fa-chart-line"></i></div>
+    <div>
+      <div class="header-title">Position Sizer Pro</div>
+      <div class="header-sub">Indian derivatives · Risk engine</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <span class="version-chip">v4.0</span>
+    <button class="hdr-btn" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+    </button>
+  </div>
+</header>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="installBanner" style="display:none;">
+  <i class="fa-solid fa-mobile-screen-button"></i>
+  <div class="install-text">
+    <strong>Install as App</strong>
+    Add to home screen for offline access
+  </div>
+  <button class="install-btn" id="installBtn">Install</button>
+  <button class="install-close" id="installClose" aria-label="Dismiss">×</button>
+</div>
+
+<!-- SCROLL AREA -->
+<div class="scroll-area">
+
+  <!-- INSTRUMENT -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-building-columns"></i> Instrument</div>
+    <div class="seg" id="assetSeg">
+      <button class="seg-btn active" data-lot="65">Nifty 50<span>Lot 65</span></button>
+      <button class="seg-btn" data-lot="30">Bank Nifty<span>Lot 30</span></button>
+      <button class="seg-btn" data-lot="20">Sensex<span>Lot 20</span></button>
+      <button class="seg-btn" data-lot="60">Fin Nifty<span>Lot 60</span></button>
+      <button class="seg-btn" data-lot="120">Midcap N.<span>Lot 120</span></button>
+      <button class="seg-btn" data-lot="custom">Custom<span>—</span></button>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="field-label" for="capitalIn"><i class="fa-solid fa-wallet"></i> Capital (₹)</label>
+        <input type="number" id="capitalIn" value="200000" min="0" step="10000" inputmode="numeric">
+      </div>
+      <div class="field" id="lotField" style="display:none;">
+        <label class="field-label" for="lotIn"><i class="fa-solid fa-layer-group"></i> Lot size</label>
+        <input type="number" id="lotIn" value="1" min="1" inputmode="numeric">
+      </div>
+    </div>
+  </div>
+
+  <!-- RISK PARAMETERS -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-shield-halved"></i> Risk parameters</div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="field-label" for="riskPct"><i class="fa-solid fa-percent"></i> Risk per trade</label>
+        <input type="number" id="riskPct" value="1" min="0.1" max="10" step="0.1" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label class="field-label" for="slPts"><i class="fa-solid fa-arrow-down-to-line"></i> Stop-loss (pts)</label>
+        <input type="number" id="slPts" value="20" min="1" step="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label class="field-label" for="entryIn"><i class="fa-solid fa-crosshairs"></i> Entry price</label>
+        <input type="number" id="entryIn" placeholder="e.g. 24500" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label class="field-label" for="dirIn"><i class="fa-solid fa-arrows-up-down"></i> Direction</label>
+        <select id="dirIn">
+          <option value="long">▲ Long (Buy)</option>
+          <option value="short">▼ Short (Sell)</option>
+        </select>
+      </div>
+    </div>
+    <div id="slDisplay" style="display:none;">
+      <div class="sl-badge">
+        <div class="sl-badge-left"><i class="fa-solid fa-triangle-exclamation"></i> Stop-loss price</div>
+        <div class="sl-badge-right">
+          <span class="sl-price-val" id="slPrice">—</span>
+          <span class="sl-dir-pill" id="slArrow">↓ SL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIZER OUTPUT -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-calculator"></i> Sizer output</div>
+    <div class="metrics">
+      <div class="metric m-gray">
+        <div class="metric-label">Allowed risk</div>
+        <div class="metric-val" id="mI">₹0</div>
+      </div>
+      <div class="metric m-blue">
+        <div class="metric-label">Deployable lots</div>
+        <div class="metric-val" id="mQ">0 lots</div>
+      </div>
+      <div class="metric m-gray">
+        <div class="metric-label">Total units</div>
+        <div class="metric-val" id="mQty">0</div>
+      </div>
+      <div class="metric m-red">
+        <div class="metric-label">Cash at risk</div>
+        <div class="metric-val" id="mRisk">₹0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REWARD MATRIX -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-bullseye"></i> Reward target matrix</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%;">R:R</th>
+            <th style="width:16%;">Pts</th>
+            <th style="width:28%;">Target price</th>
+            <th style="width:22%;">Gross P&amp;L</th>
+            <th style="width:12%;">Bar</th>
+          </tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    <i class="fa-solid fa-lock" style="font-size:10px;"></i>
+    Positions rounded down · risk never breached · settings auto-saved
+  </div>
+</div>
+
+<!-- OFFLINE TOAST -->
+<div class="toast" id="toast">
+  <i class="fa-solid fa-wifi-slash" style="font-size:13px;"></i>
+  <span id="toastMsg">You're offline — app works normally</span>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const fmtPts = n => n % 1 === 0 ? String(n) : n.toFixed(1);
+let currentLot = 65;
+let deferredPrompt = null;
+
+// ── THEME ──
+function setTheme(dark) {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  $('themeIcon').className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  $('themeColorMeta').content = dark ? '#080d14' : '#0C447C';
+  localStorage.setItem('psp_theme', dark ? 'dark' : 'light');
+}
+$('themeBtn').addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
+});
+
+// ── INSTALL PROMPT ──
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('psp_install_dismissed')) {
+    $('installBanner').style.display = 'flex';
+  }
+});
+$('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  $('installBanner').style.display = 'none';
+  if (outcome === 'accepted') showToast('✓ App installed successfully!', 3000);
+});
+$('installClose').addEventListener('click', () => {
+  $('installBanner').style.display = 'none';
+  localStorage.setItem('psp_install_dismissed', '1');
+});
+window.addEventListener('appinstalled', () => {
+  $('installBanner').style.display = 'none';
+  showToast('App installed!', 3000);
+});
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg, ms = 3000) {
+  $('toastMsg').textContent = msg;
+  $('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('show'), ms);
+}
+window.addEventListener('online',  () => showToast('Back online', 2500));
+window.addEventListener('offline', () => showToast('Offline — app still works!', 4000));
+
+// ── SEGMENT ──
+$('assetSeg').addEventListener('click', e => {
+  const btn = e.target.closest('.seg-btn');
+  if (!btn) return;
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (btn.dataset.lot === 'custom') {
+    $('lotField').style.display = '';
+    currentLot = parseFloat($('lotIn').value) || 1;
+  } else {
+    $('lotField').style.display = 'none';
+    currentLot = parseInt(btn.dataset.lot);
+  }
+  save(); calc();
+});
+$('lotIn').addEventListener('input', () => { currentLot = parseFloat($('lotIn').value) || 1; save(); calc(); });
+['capitalIn','riskPct','slPts','entryIn','dirIn'].forEach(id => {
+  $(id).addEventListener('input', () => { save(); calc(); });
+});
+
+// ── CALC ──
+function calc() {
+  const P = parseFloat($('capitalIn').value) || 0;
+  const R = parseFloat($('riskPct').value) || 0;
+  const M = currentLot;
+  const L = parseFloat($('slPts').value) || 0;
+  const entry = parseFloat($('entryIn').value) || 0;
+  const isShort = $('dirIn').value === 'short';
+
+  const I = (P * R) / 100;
+  let lots = 0, qty = 0, actualRisk = 0;
+  if (L > 0 && M > 0) {
+    lots = Math.floor(I / (L * M));
+    qty  = lots * M;
+    actualRisk = qty * L;
+  }
+
+  $('mI').textContent    = fmtINR(I);
+  $('mQ').textContent    = lots + ' lots';
+  $('mQty').textContent  = qty.toLocaleString('en-IN') + ' units';
+  $('mRisk').textContent = fmtINR(actualRisk);
+
+  if (entry > 0 && L > 0) {
+    const slPrice = isShort ? entry + L : entry - L;
+    $('slPrice').textContent = '₹' + slPrice.toLocaleString('en-IN', {maximumFractionDigits:2});
+    $('slArrow').textContent = isShort ? '↑ SL' : '↓ SL';
+    $('slDisplay').style.display = '';
+  } else {
+    $('slDisplay').style.display = 'none';
+  }
+
+  const rrClasses = ['rr1','rr2','rr3','rr4','rr5'];
+  const maxReturn = qty * L * 5;
+  let html = '';
+  [1,2,3,4,5].forEach((r, i) => {
+    const pts = L * r;
+    const targetPrice = entry > 0 ? (isShort ? entry - pts : entry + pts) : 0;
+    const gross = qty * pts;
+    const barPct = maxReturn > 0 ? Math.round((gross / maxReturn) * 100) : 20;
+    html += `<tr class="${rrClasses[i]}">
+      <td><span class="rr-pill">1:${r}</span></td>
+      <td class="mono" style="color:var(--text-secondary);">+${fmtPts(pts)}</td>
+      <td class="mono" style="font-size:12px;">${targetPrice > 0 ? '₹'+targetPrice.toLocaleString('en-IN',{maximumFractionDigits:2}) : '—'}</td>
+      <td class="mono profit" style="font-weight:500;">+${fmtINR(gross)}</td>
+      <td><div class="bar-wrap"><div class="bar-fill" style="width:${barPct}%"></div></div></td>
+    </tr>`;
+  });
+  $('matrixBody').innerHTML = html;
+}
+
+// ── PERSIST ──
+function save() {
+  try {
+    const activeBtn = document.querySelector('.seg-btn.active');
+    const btns = [...document.querySelectorAll('.seg-btn')];
+    localStorage.setItem('psp_v4b', JSON.stringify({
+      assetIdx: btns.indexOf(activeBtn), lot: currentLot,
+      capital: $('capitalIn').value, risk: $('riskPct').value,
+      sl: $('slPts').value, entry: $('entryIn').value, dir: $('dirIn').value
+    }));
+  } catch(e) {}
+}
+
+function load() {
+  const savedTheme = localStorage.getItem('psp_theme');
+  if (savedTheme === 'dark') setTheme(true);
+  try {
+    const d = JSON.parse(localStorage.getItem('psp_v4b') || 'null');
+    if (!d) { calc(); return; }
+    const btns = [...document.querySelectorAll('.seg-btn')];
+    btns.forEach(b => b.classList.remove('active'));
+    const idx = (d.assetIdx >= 0 && d.assetIdx < btns.length) ? d.assetIdx : 0;
+    btns[idx].classList.add('active');
+    if (btns[idx].dataset.lot === 'custom') {
+      $('lotField').style.display = ''; $('lotIn').value = d.lot; currentLot = d.lot;
+    } else { currentLot = parseInt(btns[idx].dataset.lot); }
+    $('capitalIn').value = d.capital || 200000;
+    $('riskPct').value   = d.risk    || 1;
+    $('slPts').value     = d.sl      || 20;
+    $('entryIn').value   = d.entry   || '';
+    $('dirIn').value     = d.dir     || 'long';
+  } catch(e) {}
+  calc();
+}
+
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => console.log('SW registered', reg.scope))
+    .catch(err => console.warn('SW error', err));
+}
+
+load();
+</script>
+</body>
+</html>
