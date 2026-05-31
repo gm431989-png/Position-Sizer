@@ -241,6 +241,60 @@ tr:last-child td{border-bottom:none;}
 /* PULSE ANIMATION for triggered alert */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 .pulse{animation:pulse 1s ease-in-out 3;}
+
+/* ══ P&L TRACKER ══ */
+.pnl-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:2px;}
+.pnl-stat{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 14px;position:relative;overflow:hidden;}
+.pnl-stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.pnl-stat.s-blue::after{background:var(--blue-mid);}
+.pnl-stat.s-green::after{background:var(--green-mid);}
+.pnl-stat.s-red::after{background:var(--red-mid);}
+.pnl-stat.s-amber::after{background:var(--amber-mid);}
+.pnl-stat.s-purple::after{background:#7F77DD;}
+.pnl-stat-label{font-size:11px;color:var(--text-secondary);font-weight:500;margin-bottom:4px;}
+.pnl-stat-val{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;color:var(--text-primary);}
+.pnl-stat.s-green .pnl-stat-val{color:var(--green-mid);}
+.pnl-stat.s-red   .pnl-stat-val{color:var(--red-mid);}
+.pnl-stat.s-amber .pnl-stat-val{color:var(--amber-mid);}
+.pnl-stat.s-purple .pnl-stat-val{color:#7F77DD;}
+.pnl-stat-sub{font-size:10px;color:var(--text-muted);margin-top:2px;}
+
+.trade-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.trade-form .span-2{grid-column:span 2;}
+.outcome-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+.out-btn{padding:9px 4px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--bg-card);font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;text-align:center;transition:all var(--tr);color:var(--text-secondary);}
+.out-btn.win{border-color:var(--green-mid);background:var(--green-bg);color:var(--green-dark);}
+.out-btn.loss{border-color:var(--red-mid);background:var(--red-bg);color:var(--red-dark);}
+.out-btn.be{border-color:var(--amber-mid);background:var(--amber-bg);color:var(--amber-dark);}
+
+.trade-item{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:8px;}
+.trade-header{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--bg-secondary);}
+.trade-outcome-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dot-win{background:var(--green-mid);}
+.dot-loss{background:var(--red-mid);}
+.dot-be{background:var(--amber-mid);}
+.trade-name{font-size:13px;font-weight:600;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.trade-pnl{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;white-space:nowrap;}
+.trade-pnl.pos{color:var(--green-mid);}
+.trade-pnl.neg{color:var(--red-mid);}
+.trade-pnl.zero{color:var(--amber-mid);}
+.trade-del{width:28px;height:28px;border:none;background:none;color:var(--text-muted);cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all var(--tr);}
+.trade-del:hover{background:var(--red-bg);color:var(--red-mid);}
+.trade-body{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border);}
+.trade-cell{padding:8px 10px;border-right:1px solid var(--border);font-size:11px;}
+.trade-cell:last-child{border-right:none;}
+.trade-cell-label{color:var(--text-muted);margin-bottom:2px;}
+.trade-cell-val{font-family:'DM Mono',monospace;font-weight:500;color:var(--text-primary);font-size:12px;}
+
+.pnl-chart-wrap{height:120px;position:relative;margin-top:4px;}
+.pnl-chart-svg{width:100%;height:100%;}
+
+.filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.filter-chip{padding:5px 11px;border-radius:20px;border:1px solid var(--border-strong);background:var(--bg-secondary);font-size:11px;font-weight:600;font-family:'Sora',sans-serif;color:var(--text-secondary);cursor:pointer;transition:all var(--tr);}
+.filter-chip.active{background:var(--blue-darker);color:#bfdbfe;border-color:var(--blue-darker);}
+
+.export-btn{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--bg-card);color:var(--text-primary);font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;transition:all var(--tr);}
+.export-btn:hover{background:var(--blue-bg);border-color:var(--blue-mid);color:var(--blue-dark);}
 </style>
 </head>
 <body>
@@ -262,8 +316,9 @@ tr:last-child td{border-bottom:none;}
     </div>
   </div>
   <nav class="nav-tabs">
-    <button class="nav-tab active" data-page="calculator"><i class="fa-solid fa-calculator"></i> Calculator</button>
+    <button class="nav-tab active" data-page="calculator"><i class="fa-solid fa-calculator"></i> Calc</button>
     <button class="nav-tab" data-page="alerts"><i class="fa-solid fa-bell"></i> Alerts</button>
+    <button class="nav-tab" data-page="pnl"><i class="fa-solid fa-chart-line"></i> P&amp;L</button>
     <button class="nav-tab" data-page="zerodha"><i class="fa-solid fa-plug"></i> Zerodha</button>
   </nav>
 </header>
@@ -357,11 +412,16 @@ tr:last-child td{border-bottom:none;}
   </div>
 
   <div class="card">
-    <div class="card-title"><i class="fa-solid fa-bell-plus"></i> Quick alert from this trade</div>
-    <button class="btn-primary" id="quickAlertBtn" style="opacity:0.5;cursor:not-allowed;" disabled>
-      <i class="fa-solid fa-bell"></i> Set SL &amp; Target Alerts for this Trade
-    </button>
-    <p style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center;">Enter entry price above to enable quick alerts</p>
+    <div class="card-title"><i class="fa-solid fa-bell-plus"></i> Quick actions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button class="btn-primary" id="quickAlertBtn" style="opacity:0.5;cursor:not-allowed;" disabled>
+        <i class="fa-solid fa-bell"></i> Set Alerts
+      </button>
+      <button class="btn-primary" id="quickLogBtn" style="background:var(--green-dark);opacity:0.5;cursor:not-allowed;" disabled>
+        <i class="fa-solid fa-floppy-disk"></i> Log Trade
+      </button>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center;">Enter entry price above to enable quick actions</p>
   </div>
 
   <div class="footer"><i class="fa-solid fa-lock" style="font-size:10px;"></i> Positions rounded down · risk never breached · settings auto-saved</div>
@@ -455,6 +515,122 @@ tr:last-child td{border-bottom:none;}
         <div class="empty-icon"><i class="fa-regular fa-bell-slash"></i></div>
         <div class="empty-title">No alerts yet</div>
         <div class="empty-sub">Add an alert above or use Quick Alert from the Calculator tab</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ P&L TRACKER PAGE ══════════ -->
+<div class="page" id="page-pnl">
+
+  <!-- SUMMARY STATS -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-chart-pie"></i> Performance summary <span style="margin-left:auto;font-size:11px;color:var(--text-muted)" id="pnlPeriodLabel">All time</span></div>
+    <div class="pnl-summary">
+      <div class="pnl-stat s-blue">
+        <div class="pnl-stat-label">Total trades</div>
+        <div class="pnl-stat-val" id="statTrades">0</div>
+        <div class="pnl-stat-sub" id="statWinLoss">— W / — L / — BE</div>
+      </div>
+      <div class="pnl-stat s-green" id="statNetCard">
+        <div class="pnl-stat-label">Net P&amp;L</div>
+        <div class="pnl-stat-val" id="statNet">₹0</div>
+        <div class="pnl-stat-sub" id="statNetPct">0% return</div>
+      </div>
+      <div class="pnl-stat s-amber">
+        <div class="pnl-stat-label">Win rate</div>
+        <div class="pnl-stat-val" id="statWinRate">0%</div>
+        <div class="pnl-stat-sub" id="statStreak">Streak: —</div>
+      </div>
+      <div class="pnl-stat s-purple">
+        <div class="pnl-stat-label">Avg R:R achieved</div>
+        <div class="pnl-stat-val" id="statAvgRR">—</div>
+        <div class="pnl-stat-sub" id="statExpect">Expectancy: —</div>
+      </div>
+    </div>
+    <!-- Equity curve mini chart -->
+    <div class="pnl-chart-wrap" id="equityCurveWrap" style="display:none;">
+      <svg class="pnl-chart-svg" id="equitySvg" viewBox="0 0 400 120" preserveAspectRatio="none"></svg>
+    </div>
+  </div>
+
+  <!-- FILTER ROW -->
+  <div class="filter-row" id="filterRow">
+    <button class="filter-chip active" data-filter="all">All</button>
+    <button class="filter-chip" data-filter="win">Wins</button>
+    <button class="filter-chip" data-filter="loss">Losses</button>
+    <button class="filter-chip" data-filter="be">Breakeven</button>
+    <button class="export-btn" id="exportCsvBtn" style="margin-left:auto;"><i class="fa-solid fa-download"></i> CSV</button>
+  </div>
+
+  <!-- LOG NEW TRADE -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-plus"></i> Log a trade</div>
+    <div class="trade-form">
+      <div class="field">
+        <label class="field-label"><i class="fa-solid fa-tag"></i> Instrument</label>
+        <input type="text" id="tInstrument" placeholder="e.g. Nifty" style="font-family:'Sora',sans-serif;font-size:13px;">
+      </div>
+      <div class="field">
+        <label class="field-label"><i class="fa-solid fa-calendar-day"></i> Date</label>
+        <input type="date" id="tDate" style="font-family:'Sora',sans-serif;font-size:13px;">
+      </div>
+      <div class="field">
+        <label class="field-label"><i class="fa-solid fa-crosshairs"></i> Entry price</label>
+        <input type="number" id="tEntry" placeholder="e.g. 24500" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label class="field-label"><i class="fa-solid fa-flag-checkered"></i> Exit price</label>
+        <input type="number" id="tExit" placeholder="e.g. 24650" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label class="field-label"><i class="fa-solid fa-layer-group"></i> Qty (units)</label>
+        <input type="number" id="tQty" placeholder="e.g. 75" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label class="field-label"><i class="fa-solid fa-arrow-down-to-line"></i> SL (pts)</label>
+        <input type="number" id="tSL" placeholder="e.g. 20" inputmode="numeric">
+      </div>
+      <div class="field span-2">
+        <label class="field-label"><i class="fa-solid fa-arrows-up-down"></i> Direction</label>
+        <select id="tDir" style="font-size:13px;">
+          <option value="long">▲ Long (Buy)</option>
+          <option value="short">▼ Short (Sell)</option>
+        </select>
+      </div>
+      <div class="field span-2">
+        <label class="field-label"><i class="fa-solid fa-circle-half-stroke"></i> Outcome</label>
+        <div class="outcome-seg">
+          <button class="out-btn win active" data-out="win">✅ Win</button>
+          <button class="out-btn loss" data-out="loss">❌ Loss</button>
+          <button class="out-btn be" data-out="be">〰️ Breakeven</button>
+        </div>
+      </div>
+      <div class="field span-2">
+        <label class="field-label"><i class="fa-solid fa-note-sticky"></i> Notes (optional)</label>
+        <input type="text" id="tNotes" placeholder="e.g. Missed SL, news spike..." style="font-family:'Sora',sans-serif;font-size:13px;">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;padding:10px 12px;background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border);">
+      <span style="font-size:12px;color:var(--text-secondary);">Calculated P&amp;L:</span>
+      <span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:600;" id="tCalcPnl">₹0</span>
+    </div>
+    <button class="btn-primary" id="logTradeBtn" style="margin-top:10px;">
+      <i class="fa-solid fa-floppy-disk"></i> Save Trade
+    </button>
+  </div>
+
+  <!-- TRADE LOG -->
+  <div class="card">
+    <div class="card-title">
+      <i class="fa-solid fa-list"></i> Trade log
+      <span id="tradeCountBadge" style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;background:var(--blue-bg);color:var(--blue-dark);padding:2px 8px;border-radius:20px;">0</span>
+    </div>
+    <div id="tradesList">
+      <div class="empty-state">
+        <div class="empty-icon"><i class="fa-regular fa-chart-bar"></i></div>
+        <div class="empty-title">No trades logged yet</div>
+        <div class="empty-sub">Log your first trade above. Use "Quick Log" from the Calculator tab to pre-fill the form.</div>
       </div>
     </div>
   </div>
@@ -607,11 +783,15 @@ function calc() {
     html+=`<tr class="${rrCls[i]}"><td><span class="rr-pill">1:${r}</span></td><td class="mono" style="color:var(--text-secondary);">+${fmtPts(pts)}</td><td class="mono" style="font-size:12px;">${tp>0?'₹'+tp.toLocaleString('en-IN',{maximumFractionDigits:2}):'—'}</td><td class="mono profit" style="font-weight:500;">+${fmtINR(gross)}</td><td><div class="bar-wrap"><div class="bar-fill" style="width:${bp}%"></div></div></td></tr>`;
   });
   $('matrixBody').innerHTML=html;
-  // Quick alert button
-  const qBtn = $('quickAlertBtn');
+  // Quick action buttons
+  const qBtn = $('quickAlertBtn'); const qLog = $('quickLogBtn');
   if (entry > 0 && L > 0) {
     qBtn.disabled=false; qBtn.style.opacity='1'; qBtn.style.cursor='pointer';
-  } else { qBtn.disabled=true; qBtn.style.opacity='0.5'; qBtn.style.cursor='not-allowed'; }
+    qLog.disabled=false; qLog.style.opacity='1'; qLog.style.cursor='pointer';
+  } else {
+    qBtn.disabled=true; qBtn.style.opacity='0.5'; qBtn.style.cursor='not-allowed';
+    qLog.disabled=true; qLog.style.opacity='0.5'; qLog.style.cursor='not-allowed';
+  }
 }
 
 // ── QUICK ALERT ──
@@ -790,7 +970,203 @@ function updateTimerDisplay() {
   $('timerDisplay').textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
 }
 
-// ── ZERODHA PAGE ──
+// ── QUICK LOG ──
+$('quickLogBtn').addEventListener('click', () => {
+  const entry = parseFloat($('entryIn').value)||0;
+  const L = parseFloat($('slPts').value)||0;
+  const activeBtn = document.querySelector('.seg-btn.active');
+  const instrument = activeBtn ? activeBtn.textContent.split('\n')[0].trim() : 'Trade';
+  const qty = parseInt($('mQty').textContent)||0;
+  if (!entry) return;
+  $('tInstrument').value = instrument;
+  $('tEntry').value = entry;
+  $('tQty').value = qty;
+  $('tSL').value = L;
+  $('tDir').value = $('dirIn').value;
+  $('tDate').value = new Date().toISOString().split('T')[0];
+  document.querySelector('[data-page="pnl"]').click();
+  $('tExit').focus();
+  showToast('Trade pre-filled — add exit price & save', 'info', 3000);
+});
+
+// ── P&L TRACKER ──
+let trades = [];
+let currentFilter = 'all';
+let selectedOutcome = 'win';
+
+// outcome selector
+document.querySelectorAll('.out-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.out-btn').forEach(b => b.classList.remove('win','loss','be','active'));
+    selectedOutcome = btn.dataset.out;
+    btn.classList.add(selectedOutcome, 'active');
+    calcTradePreview();
+  });
+});
+
+// live P&L preview
+['tEntry','tExit','tQty','tDir'].forEach(id => {
+  $(id) && $(id).addEventListener('input', calcTradePreview);
+});
+
+function calcTradePreview() {
+  const entry = parseFloat($('tEntry').value)||0;
+  const exit  = parseFloat($('tExit').value)||0;
+  const qty   = parseFloat($('tQty').value)||0;
+  const isShort = $('tDir').value === 'short';
+  if (!entry || !exit || !qty) { $('tCalcPnl').textContent = '₹0'; $('tCalcPnl').style.color='var(--text-primary)'; return; }
+  const pnl = isShort ? (entry - exit) * qty : (exit - entry) * qty;
+  $('tCalcPnl').textContent = (pnl >= 0 ? '+' : '') + fmtINR(pnl);
+  $('tCalcPnl').style.color = pnl > 0 ? 'var(--green-mid)' : pnl < 0 ? 'var(--red-mid)' : 'var(--amber-mid)';
+}
+
+$('logTradeBtn').addEventListener('click', () => {
+  const entry = parseFloat($('tEntry').value)||0;
+  const exit  = parseFloat($('tExit').value)||0;
+  const qty   = parseFloat($('tQty').value)||0;
+  const sl    = parseFloat($('tSL').value)||0;
+  const isShort = $('tDir').value === 'short';
+  if (!entry || !exit || !qty) { showToast('Fill in entry, exit & qty', 'warn'); return; }
+  const pnl = isShort ? (entry - exit) * qty : (exit - entry) * qty;
+  const rr  = sl > 0 ? Math.abs(exit - entry) / sl : null;
+  const trade = {
+    id: Date.now(),
+    instrument: $('tInstrument').value.trim() || 'Trade',
+    date: $('tDate').value || new Date().toISOString().split('T')[0],
+    entry, exit, qty, sl,
+    dir: $('tDir').value,
+    outcome: selectedOutcome,
+    pnl: Math.round(pnl),
+    rr: rr ? Math.round(rr * 100) / 100 : null,
+    notes: $('tNotes').value.trim()
+  };
+  trades.unshift(trade);
+  saveTrades(); renderTrades(); updateStats();
+  // reset form
+  ['tEntry','tExit','tQty','tSL','tNotes'].forEach(id => $(id).value = '');
+  $('tDate').value = new Date().toISOString().split('T')[0];
+  $('tCalcPnl').textContent = '₹0'; $('tCalcPnl').style.color = 'var(--text-primary)';
+  showToast('Trade saved!', 'check');
+});
+
+// filters
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFilter = chip.dataset.filter;
+    renderTrades();
+  });
+});
+
+function renderTrades() {
+  const list = $('tradesList');
+  const filtered = currentFilter === 'all' ? trades : trades.filter(t => t.outcome === currentFilter);
+  $('tradeCountBadge').textContent = trades.length;
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fa-regular fa-chart-bar"></i></div><div class="empty-title">No trades here</div><div class="empty-sub">' + (currentFilter === 'all' ? 'Log your first trade above.' : 'No ' + currentFilter + ' trades yet.') + '</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(t => {
+    const dotCls = t.outcome === 'win' ? 'dot-win' : t.outcome === 'loss' ? 'dot-loss' : 'dot-be';
+    const pnlCls = t.pnl > 0 ? 'pos' : t.pnl < 0 ? 'neg' : 'zero';
+    const pnlStr = (t.pnl >= 0 ? '+' : '') + fmtINR(t.pnl);
+    const rrStr = t.rr ? '1:' + t.rr : '—';
+    const dirIcon = t.dir === 'long' ? '▲' : '▼';
+    return `<div class="trade-item">
+      <div class="trade-header">
+        <div class="trade-outcome-dot ${dotCls}"></div>
+        <div class="trade-name">${dirIcon} ${t.instrument} <span style="font-size:10px;color:var(--text-muted);font-weight:400;">${t.date}</span>${t.notes ? '<span style="font-size:10px;color:var(--text-muted);font-weight:400;"> · '+t.notes+'</span>' : ''}</div>
+        <div class="trade-pnl ${pnlCls}">${pnlStr}</div>
+        <button class="trade-del" onclick="deleteTrade(${t.id})"><i class="fa-solid fa-trash-can"></i></button>
+      </div>
+      <div class="trade-body">
+        <div class="trade-cell"><div class="trade-cell-label">Entry</div><div class="trade-cell-val">₹${t.entry.toLocaleString('en-IN')}</div></div>
+        <div class="trade-cell"><div class="trade-cell-label">Exit</div><div class="trade-cell-val">₹${t.exit.toLocaleString('en-IN')}</div></div>
+        <div class="trade-cell"><div class="trade-cell-label">Qty</div><div class="trade-cell-val">${t.qty}</div></div>
+        <div class="trade-cell"><div class="trade-cell-label">R:R</div><div class="trade-cell-val">${rrStr}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteTrade(id) {
+  trades = trades.filter(t => t.id !== id);
+  saveTrades(); renderTrades(); updateStats();
+}
+
+function updateStats() {
+  const n = trades.length;
+  const wins  = trades.filter(t => t.outcome === 'win').length;
+  const losses= trades.filter(t => t.outcome === 'loss').length;
+  const bes   = trades.filter(t => t.outcome === 'be').length;
+  const netPnl= trades.reduce((s,t) => s + t.pnl, 0);
+  const cap   = parseFloat($('capitalIn').value)||200000;
+  const winRate= n > 0 ? Math.round((wins/n)*100) : 0;
+  const rrs   = trades.filter(t=>t.rr).map(t=>t.rr);
+  const avgRR = rrs.length > 0 ? (rrs.reduce((a,b)=>a+b,0)/rrs.length).toFixed(2) : null;
+  // streak
+  let streak = 0, streakType = '';
+  for (let i=0; i<trades.length; i++) {
+    if (i===0) { streakType = trades[i].outcome; streak=1; }
+    else if (trades[i].outcome === streakType) streak++;
+    else break;
+  }
+  const expectancy = n > 0 && avgRR ? ((winRate/100)*parseFloat(avgRR) - (1-winRate/100)).toFixed(2) : null;
+
+  $('statTrades').textContent = n;
+  $('statWinLoss').textContent = wins+'W / '+losses+'L / '+bes+'BE';
+  $('statNet').textContent = (netPnl>=0?'+':'')+fmtINR(netPnl);
+  $('statNetCard').className = 'pnl-stat ' + (netPnl>=0?'s-green':'s-red');
+  $('statNet').style.color = netPnl>0?'var(--green-mid)':netPnl<0?'var(--red-mid)':'var(--amber-mid)';
+  $('statNetPct').textContent = (netPnl>=0?'+':'') + ((netPnl/cap)*100).toFixed(2) + '% return';
+  $('statWinRate').textContent = winRate + '%';
+  $('statStreak').textContent = n > 0 ? 'Streak: ' + streak + ' ' + streakType + (streak>1?'s':'') : 'Streak: —';
+  $('statAvgRR').textContent = avgRR ? '1:' + avgRR : '—';
+  $('statExpect').textContent = expectancy ? 'Expect: ' + expectancy + 'R' : 'Expectancy: —';
+  drawEquityCurve();
+}
+
+function drawEquityCurve() {
+  if (trades.length < 2) { $('equityCurveWrap').style.display='none'; return; }
+  $('equityCurveWrap').style.display='';
+  const reversed = [...trades].reverse();
+  let running = 0;
+  const points = [0, ...reversed.map(t => { running += t.pnl; return running; })];
+  const minV = Math.min(...points), maxV = Math.max(...points);
+  const range = maxV - minV || 1;
+  const W = 400, H = 120, pad = 10;
+  const toX = i => pad + (i / (points.length-1)) * (W - pad*2);
+  const toY = v => H - pad - ((v - minV) / range) * (H - pad*2);
+  const pts = points.map((v,i) => toX(i)+','+toY(v)).join(' ');
+  const lastV = points[points.length-1];
+  const color = lastV >= 0 ? '#1D9E75' : '#A32D2D';
+  const fillPts = `${toX(0)},${H} ` + pts + ` ${toX(points.length-1)},${H}`;
+  $('equitySvg').innerHTML = `
+    <defs><linearGradient id="curveGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0.02"/>
+    </linearGradient></defs>
+    <line x1="${pad}" y1="${toY(0)}" x2="${W-pad}" y2="${toY(0)}" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,4"/>
+    <polygon points="${fillPts}" fill="url(#curveGrad)"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${toX(points.length-1)}" cy="${toY(lastV)}" r="4" fill="${color}"/>`;
+}
+
+// CSV export
+$('exportCsvBtn').addEventListener('click', () => {
+  if (trades.length === 0) { showToast('No trades to export', 'warn'); return; }
+  const rows = [['Date','Instrument','Direction','Entry','Exit','Qty','SL pts','R:R','Outcome','P&L','Notes']];
+  trades.forEach(t => rows.push([t.date,t.instrument,t.dir,t.entry,t.exit,t.qty,t.sl||'',t.rr||'',t.outcome,t.pnl,t.notes||'']));
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='trades_'+new Date().toISOString().split('T')[0]+'.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV exported!', 'check');
+});
+
+function saveTrades() { try { localStorage.setItem('psp_trades', JSON.stringify(trades)); } catch(e) {} }
 $('redirectUrl').textContent = window.location.origin + window.location.pathname;
 $('zerodhaConnect').addEventListener('click', () => {
   showToast('Zerodha integration coming soon!', 'info', 3000);
@@ -826,7 +1202,9 @@ function load() {
     }
   } catch(e) {}
   try { alerts = JSON.parse(localStorage.getItem('psp_alerts')||'[]'); } catch(e) { alerts=[]; }
-  updateNotifUI(); renderAlerts(); calc();
+  try { trades = JSON.parse(localStorage.getItem('psp_trades')||'[]'); } catch(e) { trades=[]; }
+  $('tDate').value = new Date().toISOString().split('T')[0];
+  updateNotifUI(); renderAlerts(); renderTrades(); updateStats(); calc();
 }
 
 if ('serviceWorker' in navigator) {
