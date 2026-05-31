@@ -1,4 +1,4 @@
-const CACHE = 'psp-v4-cache-v1';
+const CACHE = 'psp-v5-cache-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -11,11 +11,9 @@ const ASSETS = [
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(cache => {
-      return Promise.allSettled(
-        ASSETS.map(url => cache.add(url).catch(() => {}))
-      );
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE).then(cache =>
+      Promise.allSettled(ASSETS.map(url => cache.add(url).catch(() => {})))
+    ).then(() => self.skipWaiting())
   );
 });
 
@@ -40,4 +38,26 @@ self.addEventListener('fetch', e => {
       }).catch(() => caches.match('./index.html'));
     })
   );
+});
+
+// Push notification handler
+self.addEventListener('push', e => {
+  const data = e.data ? e.data.json() : { title: 'Price Alert!', body: 'Check your trade.' };
+  e.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: './icons/icon-192.png',
+      badge: './icons/icon-192.png',
+      vibrate: [200, 100, 200],
+      tag: 'price-alert',
+      renotify: true,
+      requireInteraction: true,
+      data: { url: './' }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(clients.openWindow(e.notification.data.url || './'));
 });
