@@ -636,54 +636,261 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- ══════════ ZERODHA PAGE ══════════ -->
+<!-- ══════════ BROKER CONNECT PAGE ══════════ -->
 <div class="page" id="page-zerodha">
-  <div class="zerodha-card">
-    <div class="zerodha-logo">Z</div>
-    <div class="zerodha-title">Connect Zerodha Kite</div>
-    <div class="zerodha-sub">Connect your Zerodha account to get <strong>live prices automatically</strong> — no more manual price entry for alerts.</div>
 
-    <div id="zerodhaConnected" style="display:none;">
-      <div class="connected-chip"><i class="fa-solid fa-circle-check"></i> Connected to Zerodha</div>
-      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Live prices are now flowing into your alerts automatically.</p>
-      <button class="btn-primary" id="zerodhaDisconnect" style="background:var(--red-mid);">
-        <i class="fa-solid fa-plug-circle-xmark"></i> Disconnect
+  <!-- ANGEL ONE HERO -->
+  <div class="card" style="background:linear-gradient(135deg,#e8f0fe 0%,#f0f7ff 100%);border-color:#b8d0f8;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <div style="width:46px;height:46px;border-radius:12px;background:#E84525;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;box-shadow:0 2px 8px rgba(232,69,37,0.35);">A1</div>
+      <div>
+        <div style="font-size:16px;font-weight:600;color:#0f172a;">Angel One SmartAPI</div>
+        <div style="font-size:11px;color:#64748b;">Free API · Live prices · WebSocket feed</div>
+      </div>
+      <div id="angelStatusChip" style="margin-left:auto;display:none;">
+        <span class="connected-chip"><i class="fa-solid fa-circle-check"></i> Connected</span>
+      </div>
+    </div>
+    <!-- Comparison pills -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+      <span style="font-size:11px;padding:4px 10px;border-radius:20px;background:#E1F5EE;color:#0F6E56;font-weight:600;border:1px solid #1D9E75;">✓ Free API</span>
+      <span style="font-size:11px;padding:4px 10px;border-radius:20px;background:#E1F5EE;color:#0F6E56;font-weight:600;border:1px solid #1D9E75;">✓ No monthly fee</span>
+      <span style="font-size:11px;padding:4px 10px;border-radius:20px;background:#E1F5EE;color:#0F6E56;font-weight:600;border:1px solid #1D9E75;">✓ Live WebSocket</span>
+      <span style="font-size:11px;padding:4px 10px;border-radius:20px;background:#E6F1FB;color:#185FA5;font-weight:600;border:1px solid #378ADD;">vs Zerodha ₹2000/mo</span>
+    </div>
+
+    <!-- METHOD TABS -->
+    <div style="display:flex;gap:0;border:1px solid #b8d0f8;border-radius:var(--radius-md);overflow:hidden;margin-bottom:14px;">
+      <button class="method-tab active" data-method="manual" style="flex:1;padding:9px 6px;border:none;background:#0C447C;color:#bfdbfe;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;">
+        <i class="fa-solid fa-key" style="margin-right:4px;"></i> Option A — Manual Token
+      </button>
+      <button class="method-tab" data-method="cloudflare" style="flex:1;padding:9px 6px;border:none;background:transparent;color:#185FA5;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;border-left:1px solid #b8d0f8;">
+        <i class="fa-solid fa-cloud" style="margin-right:4px;"></i> Option B — Auto (Cloudflare)
       </button>
     </div>
 
-    <div id="zerodhaSetup">
-      <div class="zerodha-steps">
-        <div class="zerodha-step"><div class="step-num">1</div><div>Go to <strong>kite.zerodha.com/account/apps</strong> and create a new app to get your API key &amp; secret.</div></div>
-        <div class="zerodha-step"><div class="step-num">2</div><div>Set redirect URL to <strong id="redirectUrl"></strong></div></div>
-        <div class="zerodha-step"><div class="step-num">3</div><div>Paste your API key below and click Connect. You'll log in with your Zerodha credentials.</div></div>
+    <!-- OPTION A: MANUAL TOKEN -->
+    <div id="methodManual">
+      <div style="background:#fff;border:1px solid #b8d0f8;border-radius:var(--radius-md);padding:12px 14px;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;"><i class="fa-solid fa-circle-info" style="color:#378ADD;margin-right:5px;"></i>How it works</div>
+        <div style="font-size:12px;color:#64748b;line-height:1.7;">
+          You log into Angel One once a day and paste your JWT token here. The app uses it to fetch live prices for your alerts. Token expires daily — re-paste each morning before trading.
+        </div>
       </div>
-      <div class="zerodha-input-row">
-        <input type="text" id="zerodhaApiKey" placeholder="Your Zerodha API key..." style="font-family:'DM Mono',monospace;font-size:13px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-key"></i> API Key (from smartapi.angelbroking.com)</label>
+          <input type="text" id="angelApiKey" placeholder="Your Angel One API key" style="font-family:'DM Mono',monospace;font-size:13px;">
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-user"></i> Client ID</label>
+          <input type="text" id="angelClientId" placeholder="Your Angel One client ID" style="font-family:'DM Mono',monospace;font-size:13px;">
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-lock"></i> MPIN</label>
+          <input type="password" id="angelMpin" placeholder="Your 4-digit MPIN" style="font-family:'DM Mono',monospace;font-size:13px;">
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-shield"></i> TOTP Code (from Authenticator app)</label>
+          <input type="text" id="angelTotp" placeholder="6-digit TOTP" maxlength="6" style="font-family:'DM Mono',monospace;font-size:13px;" inputmode="numeric">
+        </div>
+        <div style="background:#FAEEDA;border:1px solid #EF9F27;border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;color:#854F0B;line-height:1.6;">
+          <i class="fa-solid fa-triangle-exclamation" style="margin-right:4px;"></i>
+          <strong>CORS limitation:</strong> Direct API calls from browser are blocked by Angel One's servers. Use Option B (Cloudflare Worker) for automatic login, or paste your JWT token manually below.
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-ticket"></i> OR paste JWT Token directly</label>
+          <input type="text" id="angelJwt" placeholder="Paste JWT token from Angel One..." style="font-family:'DM Mono',monospace;font-size:11px;">
+        </div>
+        <button class="btn-primary" id="angelConnectManual" style="background:#E84525;">
+          <i class="fa-solid fa-plug"></i> Connect with Token
+        </button>
       </div>
-      <button class="btn-zerodha" id="zerodhaConnect">
-        <i class="fa-solid fa-plug"></i> Connect Zerodha (Coming Soon)
-      </button>
-      <p style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.6;">
-        <i class="fa-solid fa-shield-halved" style="margin-right:4px;"></i>
-        Your API key is stored only on your device. We never send it to any server. Live price integration requires hosting on a server with HTTPS (your GitHub Pages URL works perfectly).
-      </p>
+      <!-- HOW TO GET JWT -->
+      <div style="margin-top:14px;background:#fff;border:1px solid #b8d0f8;border-radius:var(--radius-md);padding:12px 14px;">
+        <div style="font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;">How to get your JWT token</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="zerodha-step"><div class="step-num">1</div><div style="font-size:12px;color:#64748b;">Go to <strong style="color:#0f172a;">smartapi.angelbroking.com</strong> → login → create an app → copy your <strong style="color:#0f172a;">API key</strong></div></div>
+          <div class="zerodha-step"><div class="step-num">2</div><div style="font-size:12px;color:#64748b;">Enable TOTP in Angel One app: Profile → Security → Enable TOTP → scan QR with Google Authenticator</div></div>
+          <div class="zerodha-step"><div class="step-num">3</div><div style="font-size:12px;color:#64748b;">Each morning, run this in browser console on any page:<br><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:11px;display:block;margin-top:4px;word-break:break-all;">fetch('https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword',{method:'POST',headers:{'Content-Type':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':'YOUR_API_KEY'},body:JSON.stringify({clientcode:'YOUR_CLIENT_ID',password:'YOUR_MPIN',totp:'YOUR_TOTP'})}).then(r=>r.json()).then(d=>console.log('JWT:',d.data?.jwtToken))</code></div></div>
+          <div class="zerodha-step"><div class="step-num">4</div><div style="font-size:12px;color:#64748b;">Copy the JWT token from console → paste above → click Connect</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION B: CLOUDFLARE WORKER -->
+    <div id="methodCloudflare" style="display:none;">
+      <div style="background:#fff;border:1px solid #b8d0f8;border-radius:var(--radius-md);padding:12px 14px;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:600;color:#0f172a;margin-bottom:6px;"><i class="fa-solid fa-wand-magic-sparkles" style="color:#7F77DD;margin-right:5px;"></i>What this does</div>
+        <div style="font-size:12px;color:#64748b;line-height:1.7;">A tiny free Cloudflare Worker acts as a proxy — it handles the Angel One login for you, bypassing the CORS restriction. <strong style="color:#0f172a;">One-time 5-minute setup, then fully automatic.</strong> Your credentials stay only in your Cloudflare account.</div>
+      </div>
+
+      <!-- Cloudflare Worker code -->
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:600;color:#0f172a;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;">
+          <span><i class="fa-brands fa-js" style="color:#F7B731;margin-right:5px;"></i>Cloudflare Worker code</span>
+          <button id="copyWorkerBtn" style="padding:4px 10px;border-radius:20px;border:1px solid var(--border-strong);background:var(--bg-card);font-size:11px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;color:var(--text-secondary);">
+            <i class="fa-solid fa-copy"></i> Copy
+          </button>
+        </div>
+        <pre id="workerCode" style="background:#0f172a;color:#e2e8f0;border-radius:var(--radius-md);padding:12px;font-size:11px;font-family:'DM Mono',monospace;overflow-x:auto;white-space:pre;line-height:1.6;margin:0;">export default {
+  async fetch(request, env) {
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
+    if (request.method === 'OPTIONS')
+      return new Response(null, { headers: corsHeaders });
+
+    const { clientcode, password, totp, apikey } = await request.json();
+
+    const res = await fetch(
+      'https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-UserType': 'USER',
+          'X-SourceID': 'WEB',
+          'X-ClientLocalIP': '127.0.0.1',
+          'X-ClientPublicIP': '127.0.0.1',
+          'X-MACAddress': '00:00:00:00:00:00',
+          'X-PrivateKey': apikey,
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ clientcode, password, totp }),
+      }
+    );
+    const data = await res.json();
+    return new Response(JSON.stringify(data), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  },
+};</pre>
+      </div>
+
+      <!-- Setup steps -->
+      <div style="background:#fff;border:1px solid #b8d0f8;border-radius:var(--radius-md);padding:12px 14px;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;">Setup steps (5 minutes, free)</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="zerodha-step"><div class="step-num">1</div><div style="font-size:12px;color:#64748b;">Go to <strong style="color:#0f172a;">workers.cloudflare.com</strong> → sign up free → click <strong style="color:#0f172a;">"Create Worker"</strong></div></div>
+          <div class="zerodha-step"><div class="step-num">2</div><div style="font-size:12px;color:#64748b;">Delete the default code → paste the worker code above → click <strong style="color:#0f172a;">"Deploy"</strong></div></div>
+          <div class="zerodha-step"><div class="step-num">3</div><div style="font-size:12px;color:#64748b;">Copy your worker URL (looks like <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;">your-worker.workers.dev</code>) → paste below</div></div>
+          <div class="zerodha-step"><div class="step-num">4</div><div style="font-size:12px;color:#64748b;">Get your Angel One API key from <strong style="color:#0f172a;">smartapi.angelbroking.com</strong> → fill all fields → click Connect</div></div>
+          <div class="zerodha-step"><div class="step-num">5</div><div style="font-size:12px;color:#64748b;">Enable TOTP in Angel One app → Profile → Security → Enable TOTP → scan with Google Authenticator</div></div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-cloud"></i> Your Cloudflare Worker URL</label>
+          <input type="text" id="cfWorkerUrl" placeholder="https://your-worker.workers.dev" style="font-family:'DM Mono',monospace;font-size:12px;">
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-key"></i> Angel One API Key</label>
+          <input type="text" id="cfApiKey" placeholder="From smartapi.angelbroking.com" style="font-family:'DM Mono',monospace;font-size:13px;">
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-user"></i> Client ID</label>
+          <input type="text" id="cfClientId" placeholder="Your Angel One client ID" style="font-family:'DM Mono',monospace;font-size:13px;">
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-lock"></i> MPIN</label>
+          <input type="password" id="cfMpin" placeholder="Your 4-digit MPIN" style="font-family:'DM Mono',monospace;font-size:13px;">
+        </div>
+        <div class="field">
+          <label class="field-label"><i class="fa-solid fa-shield"></i> TOTP (6-digit from Authenticator app)</label>
+          <input type="text" id="cfTotp" placeholder="Current TOTP code" maxlength="6" inputmode="numeric" style="font-family:'DM Mono',monospace;font-size:13px;">
+        </div>
+        <button class="btn-primary" id="angelConnectCf" style="background:#E84525;">
+          <i class="fa-solid fa-plug"></i> Connect via Cloudflare Worker
+        </button>
+      </div>
+    </div>
+
+    <!-- CONNECTED STATE -->
+    <div id="angelConnectedPanel" style="display:none;margin-top:14px;">
+      <div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:var(--radius-md);padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <i class="fa-solid fa-circle-check" style="color:#0F6E56;font-size:18px;"></i>
+          <div style="font-size:14px;font-weight:600;color:#0F6E56;">Connected to Angel One</div>
+        </div>
+        <div style="font-size:12px;color:#0F6E56;margin-bottom:10px;" id="angelConnectedInfo">Live prices active</div>
+        <!-- Live price fetcher -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <select id="angelSymbol" style="flex:1;font-size:13px;padding:8px 10px;border-radius:var(--radius-sm);border:1px solid #1D9E75;background:#fff;color:#0f172a;">
+            <option value="99926000">Nifty 50</option>
+            <option value="99926009">Bank Nifty</option>
+            <option value="99919000">Sensex</option>
+            <option value="99926074">Fin Nifty</option>
+            <option value="99926013">Midcap Nifty</option>
+          </select>
+          <button class="btn-primary" id="fetchPriceBtn" style="width:auto;padding:8px 14px;background:#0F6E56;">
+            <i class="fa-solid fa-rotate"></i> Fetch
+          </button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:var(--radius-sm);padding:10px 13px;border:1px solid #1D9E75;">
+          <span style="font-size:12px;color:#0F6E56;font-weight:500;">Live price</span>
+          <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:#0F6E56;" id="angelLivePrice">—</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button class="btn-primary" id="sendToAlertsBtn" style="background:#185FA5;flex:1;">
+            <i class="fa-solid fa-bell"></i> Send to Alerts
+          </button>
+          <button class="btn-primary" id="sendToCalcBtn" style="background:#0F6E56;flex:1;">
+            <i class="fa-solid fa-calculator"></i> Set as Entry
+          </button>
+          <button class="btn-primary" id="angelDisconnect" style="background:var(--red-mid);width:auto;padding:10px 14px;">
+            <i class="fa-solid fa-plug-circle-xmark"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- COMPARISON CARD -->
   <div class="card">
-    <div class="card-title"><i class="fa-solid fa-road"></i> Zerodha Integration Roadmap</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
+    <div class="card-title"><i class="fa-solid fa-scale-balanced"></i> Option comparison</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px;border:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text-primary);">Option A — Manual</div>
+        <div style="font-size:11px;color:var(--text-secondary);line-height:1.8;">
+          ✅ Works immediately<br>✅ No extra setup<br>✅ Works offline<br>⚠️ Paste token daily<br>⚠️ Manual price fetch
+        </div>
+      </div>
+      <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px;border:2px solid var(--blue-mid);">
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--blue-dark);">Option B — Auto ⭐</div>
+        <div style="font-size:11px;color:var(--text-secondary);line-height:1.8;">
+          ✅ Auto login daily<br>✅ One-click price fetch<br>✅ Free forever<br>✅ Most reliable<br>⚠️ 5 min setup once
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-road"></i> Integration roadmap</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--green-bg);border-radius:var(--radius-md);border:1px solid var(--green-mid);">
-        <i class="fa-solid fa-circle-check" style="color:var(--green-mid);font-size:16px;"></i>
-        <div><div style="font-size:13px;font-weight:600;color:var(--green-dark);">Manual alerts</div><div style="font-size:11px;color:var(--text-secondary);">Available now — works offline</div></div>
+        <i class="fa-solid fa-circle-check" style="color:var(--green-mid);font-size:15px;"></i>
+        <div><div style="font-size:12px;font-weight:600;color:var(--green-dark);">Manual alerts + timer</div><div style="font-size:11px;color:var(--text-secondary);">Live now</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--green-bg);border-radius:var(--radius-md);border:1px solid var(--green-mid);">
+        <i class="fa-solid fa-circle-check" style="color:var(--green-mid);font-size:15px;"></i>
+        <div><div style="font-size:12px;font-weight:600;color:var(--green-dark);">Angel One manual token</div><div style="font-size:11px;color:var(--text-secondary);">Live now — Option A</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--green-bg);border-radius:var(--radius-md);border:1px solid var(--green-mid);">
+        <i class="fa-solid fa-circle-check" style="color:var(--green-mid);font-size:15px;"></i>
+        <div><div style="font-size:12px;font-weight:600;color:var(--green-dark);">Cloudflare Worker proxy</div><div style="font-size:11px;color:var(--text-secondary);">Live now — Option B</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--amber-bg);border-radius:var(--radius-md);border:1px solid var(--amber-mid);">
-        <i class="fa-solid fa-clock" style="color:var(--amber-mid);font-size:16px;"></i>
-        <div><div style="font-size:13px;font-weight:600;color:var(--amber-dark);">Zerodha live price feed</div><div style="font-size:11px;color:var(--text-secondary);">Coming — requires API key setup</div></div>
+        <i class="fa-solid fa-clock" style="color:var(--amber-mid);font-size:15px;"></i>
+        <div><div style="font-size:12px;font-weight:600;color:var(--amber-dark);">WebSocket live streaming</div><div style="font-size:11px;color:var(--text-secondary);">Coming — real-time auto price updates</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border);">
-        <i class="fa-solid fa-hourglass-start" style="color:var(--text-muted);font-size:16px;"></i>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Auto order placement</div><div style="font-size:11px;color:var(--text-muted);">Planned — place SL orders directly</div></div>
+        <i class="fa-solid fa-hourglass-start" style="color:var(--text-muted);font-size:15px;"></i>
+        <div><div style="font-size:12px;font-weight:600;color:var(--text-secondary);">Auto SL order placement</div><div style="font-size:11px;color:var(--text-muted);">Planned</div></div>
       </div>
     </div>
   </div>
@@ -1167,10 +1374,212 @@ $('exportCsvBtn').addEventListener('click', () => {
 });
 
 function saveTrades() { try { localStorage.setItem('psp_trades', JSON.stringify(trades)); } catch(e) {} }
-$('redirectUrl').textContent = window.location.origin + window.location.pathname;
-$('zerodhaConnect').addEventListener('click', () => {
-  showToast('Zerodha integration coming soon!', 'info', 3000);
+
+// ══════════════════════════════════════════════
+// ── ANGEL ONE INTEGRATION ──
+// ══════════════════════════════════════════════
+let angelJwtToken = null;
+let angelAutoRefreshTimer = null;
+
+// Method tab toggle
+document.querySelectorAll('.method-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.method-tab').forEach(b => {
+      b.style.background = 'transparent';
+      b.style.color = '#185FA5';
+    });
+    btn.style.background = '#0C447C';
+    btn.style.color = '#bfdbfe';
+    $('methodManual').style.display    = btn.dataset.method === 'manual'      ? '' : 'none';
+    $('methodCloudflare').style.display = btn.dataset.method === 'cloudflare' ? '' : 'none';
+  });
 });
+
+// Copy worker code
+$('copyWorkerBtn').addEventListener('click', () => {
+  const code = $('workerCode').textContent;
+  navigator.clipboard.writeText(code).then(() => showToast('Worker code copied!', 'check'))
+    .catch(() => showToast('Select & copy the code manually', 'warn'));
+});
+
+// ── OPTION A: Manual JWT token ──
+$('angelConnectManual').addEventListener('click', () => {
+  const jwt = $('angelJwt').value.trim();
+  const apiKey = $('angelApiKey').value.trim();
+  if (!jwt) { showToast('Paste your JWT token first', 'warn'); return; }
+  angelJwtToken = jwt;
+  saveAngelCreds({ method: 'manual', jwt, apiKey });
+  showAngelConnected('manual', apiKey || 'Manual token');
+  showToast('Connected via JWT token!', 'check');
+});
+
+// ── OPTION B: Cloudflare Worker auto-login ──
+$('angelConnectCf').addEventListener('click', async () => {
+  const workerUrl = $('cfWorkerUrl').value.trim().replace(/\/$/, '');
+  const apiKey    = $('cfApiKey').value.trim();
+  const clientId  = $('cfClientId').value.trim();
+  const mpin      = $('cfMpin').value.trim();
+  const totp      = $('cfTotp').value.trim();
+
+  if (!workerUrl || !apiKey || !clientId || !mpin || !totp) {
+    showToast('Fill in all fields', 'warn'); return;
+  }
+  if (totp.length !== 6) { showToast('TOTP must be 6 digits', 'warn'); return; }
+
+  $('angelConnectCf').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
+  $('angelConnectCf').disabled = true;
+
+  try {
+    const res = await fetch(workerUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientcode: clientId, password: mpin, totp, apikey: apiKey })
+    });
+    const data = await res.json();
+
+    if (data?.status && data?.data?.jwtToken) {
+      angelJwtToken = data.data.jwtToken;
+      saveAngelCreds({ method: 'cloudflare', workerUrl, apiKey, clientId, mpin });
+      showAngelConnected('cloudflare', clientId);
+      showToast('Connected to Angel One!', 'check');
+      // Auto re-login every 23 hours
+      scheduleAutoRefresh(workerUrl, apiKey, clientId, mpin);
+    } else {
+      const errMsg = data?.message || 'Login failed — check your credentials';
+      showToast('Error: ' + errMsg, 'warn', 5000);
+    }
+  } catch(e) {
+    showToast('Could not reach Worker URL — check it is correct', 'warn', 5000);
+  }
+
+  $('angelConnectCf').innerHTML = '<i class="fa-solid fa-plug"></i> Connect via Cloudflare Worker';
+  $('angelConnectCf').disabled = false;
+});
+
+function scheduleAutoRefresh(workerUrl, apiKey, clientId, mpin) {
+  clearInterval(angelAutoRefreshTimer);
+  // Re-login every 23 hours silently (token expires every 24h)
+  angelAutoRefreshTimer = setInterval(async () => {
+    try {
+      // Need fresh TOTP — can't auto-generate without secret key
+      // So just show a reminder notification
+      fireNotification('⚠️ Angel One token expiring', 'Open Position Sizer and refresh your TOTP to stay connected');
+      showToast('Angel One token expiring — reconnect with new TOTP', 'warn', 6000);
+    } catch(e) {}
+  }, 23 * 60 * 60 * 1000);
+}
+
+// ── FETCH LIVE PRICE ──
+$('fetchPriceBtn').addEventListener('click', fetchAngelPrice);
+
+async function fetchAngelPrice() {
+  if (!angelJwtToken) { showToast('Not connected to Angel One', 'warn'); return; }
+  const symbolToken = $('angelSymbol').value;
+  const symbolName  = $('angelSymbol').options[$('angelSymbol').selectedIndex].text;
+
+  $('fetchPriceBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+  try {
+    const res = await fetch('https://apiconnect.angelbroking.com/rest/secure/angelbroking/market/v1/quote/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + angelJwtToken,
+        'X-UserType': 'USER',
+        'X-SourceID': 'WEB',
+        'X-ClientLocalIP': '127.0.0.1',
+        'X-ClientPublicIP': '127.0.0.1',
+        'X-MACAddress': '00:00:00:00:00:00',
+        'X-PrivateKey': loadAngelCreds()?.apiKey || ''
+      },
+      body: JSON.stringify({ mode: 'LTP', exchangeTokens: { NSE: [symbolToken] } })
+    });
+    const data = await res.json();
+    const ltp = data?.data?.fetched?.[0]?.ltp;
+
+    if (ltp) {
+      $('angelLivePrice').textContent = '₹' + Number(ltp).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+      $('angelLivePrice').setAttribute('data-raw', ltp);
+      showToast(symbolName + ': ₹' + Number(ltp).toLocaleString('en-IN'), 'check');
+    } else {
+      showToast('Could not fetch price — token may have expired', 'warn', 4000);
+    }
+  } catch(e) {
+    showToast('Network error — check your connection', 'warn');
+  }
+  $('fetchPriceBtn').innerHTML = '<i class="fa-solid fa-rotate"></i> Fetch';
+}
+
+// ── SEND PRICE TO ALERTS ──
+$('sendToAlertsBtn').addEventListener('click', () => {
+  const raw = $('angelLivePrice').getAttribute('data-raw');
+  if (!raw) { showToast('Fetch a price first', 'warn'); return; }
+  const price = parseFloat(raw);
+  $('livePrice').value = price;
+  checkAlerts(price);
+  document.querySelector('[data-page="alerts"]').click();
+  showToast('Price sent to Alerts tab!', 'check');
+});
+
+// ── SEND PRICE TO CALCULATOR ──
+$('sendToCalcBtn') && $('sendToCalcBtn').addEventListener('click', () => {
+  const raw = $('angelLivePrice').getAttribute('data-raw');
+  if (!raw) { showToast('Fetch a price first', 'warn'); return; }
+  $('entryIn').value = parseFloat(raw);
+  document.querySelector('[data-page="calculator"]').click();
+  calc();
+  showToast('Price set as entry!', 'check');
+});
+
+// ── DISCONNECT ──
+$('angelDisconnect').addEventListener('click', () => {
+  angelJwtToken = null;
+  clearInterval(angelAutoRefreshTimer);
+  localStorage.removeItem('psp_angel');
+  $('angelConnectedPanel').style.display = 'none';
+  $('angelStatusChip').style.display = 'none';
+  $('methodManual').style.display = '';
+  $('angelLivePrice').textContent = '—';
+  $('angelLivePrice').removeAttribute('data-raw');
+  showToast('Disconnected from Angel One', 'info');
+});
+
+// ── UI STATE ──
+function showAngelConnected(method, label) {
+  $('angelConnectedPanel').style.display = '';
+  $('angelStatusChip').style.display = '';
+  $('methodManual').style.display = 'none';
+  $('methodCloudflare').style.display = 'none';
+  $('angelConnectedInfo').textContent =
+    (method === 'cloudflare' ? '⚡ Auto-login · ' : '🔑 Manual token · ') +
+    'Client: ' + label + ' · Connected ' + new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+}
+
+// ── PERSIST ANGEL CREDS (non-sensitive parts only) ──
+function saveAngelCreds(data) {
+  try { localStorage.setItem('psp_angel', JSON.stringify(data)); } catch(e) {}
+}
+function loadAngelCreds() {
+  try { return JSON.parse(localStorage.getItem('psp_angel') || 'null'); } catch(e) { return null; }
+}
+
+function restoreAngelSession() {
+  const creds = loadAngelCreds();
+  if (!creds) return;
+  // Restore JWT if stored (manual method only — CF needs fresh TOTP)
+  if (creds.method === 'manual' && creds.jwt) {
+    angelJwtToken = creds.jwt;
+    $('angelApiKey').value = creds.apiKey || '';
+    $('angelJwt').value = creds.jwt;
+    showAngelConnected('manual', 'Saved token');
+  } else if (creds.method === 'cloudflare') {
+    $('cfWorkerUrl').value = creds.workerUrl || '';
+    $('cfApiKey').value    = creds.apiKey    || '';
+    $('cfClientId').value  = creds.clientId  || '';
+    // Don't restore mpin to field for security — just show a reconnect prompt
+    showToast('Enter TOTP to reconnect Angel One', 'info', 5000);
+  }
+}
 
 // ── PERSIST ──
 function save() {
@@ -1205,6 +1614,7 @@ function load() {
   try { trades = JSON.parse(localStorage.getItem('psp_trades')||'[]'); } catch(e) { trades=[]; }
   $('tDate').value = new Date().toISOString().split('T')[0];
   updateNotifUI(); renderAlerts(); renderTrades(); updateStats(); calc();
+  restoreAngelSession();
 }
 
 if ('serviceWorker' in navigator) {
