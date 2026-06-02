@@ -295,6 +295,11 @@ tr:last-child td{border-bottom:none;}
 
 .export-btn{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--bg-card);color:var(--text-primary);font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;transition:all var(--tr);}
 .export-btn:hover{background:var(--blue-bg);border-color:var(--blue-mid);color:var(--blue-dark);}
+
+/* AUTO FETCH INTERVAL BUTTONS */
+.af-btn{padding:8px 4px;border:1px solid #1D9E75;border-radius:var(--radius-sm);background:#fff;color:#0F6E56;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;transition:all var(--tr);text-align:center;}
+.af-btn.active{background:#0F6E56;color:#fff;border-color:#0F6E56;}
+.af-btn:not(.active):hover{background:#E1F5EE;}
 </style>
 </head>
 <body>
@@ -812,36 +817,71 @@ tr:last-child td{border-bottom:none;}
     <!-- CONNECTED STATE -->
     <div id="angelConnectedPanel" style="display:none;margin-top:14px;">
       <div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:var(--radius-md);padding:14px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
           <i class="fa-solid fa-circle-check" style="color:#0F6E56;font-size:18px;"></i>
           <div style="font-size:14px;font-weight:600;color:#0F6E56;">Connected to Angel One</div>
+          <span id="autoFetchBadge" style="display:none;margin-left:auto;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:#0F6E56;color:#fff;animation:pulse 2s infinite;">● LIVE</span>
         </div>
-        <div style="font-size:12px;color:#0F6E56;margin-bottom:10px;" id="angelConnectedInfo">Live prices active</div>
-        <!-- Live price fetcher -->
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <select id="angelSymbol" style="flex:1;font-size:13px;padding:8px 10px;border-radius:var(--radius-sm);border:1px solid #1D9E75;background:#fff;color:#0f172a;">
+        <div style="font-size:12px;color:#0F6E56;margin-bottom:12px;" id="angelConnectedInfo">Live prices active</div>
+
+        <!-- INSTRUMENT SELECTOR -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:600;color:#0F6E56;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Instrument</div>
+          <select id="angelSymbol" style="width:100%;font-size:13px;padding:9px 11px;border-radius:var(--radius-sm);border:1px solid #1D9E75;background:#fff;color:#0f172a;font-family:'Sora',sans-serif;">
             <option value="99926000">Nifty 50</option>
             <option value="99926009">Bank Nifty</option>
             <option value="99919000">Sensex</option>
             <option value="99926074">Fin Nifty</option>
             <option value="99926013">Midcap Nifty</option>
           </select>
-          <button class="btn-primary" id="fetchPriceBtn" style="width:auto;padding:8px 14px;background:#0F6E56;">
-            <i class="fa-solid fa-rotate"></i> Fetch
-          </button>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:var(--radius-sm);padding:10px 13px;border:1px solid #1D9E75;">
-          <span style="font-size:12px;color:#0F6E56;font-weight:500;">Live price</span>
-          <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:#0F6E56;" id="angelLivePrice">—</span>
+
+        <!-- LIVE PRICE DISPLAY -->
+        <div style="background:#fff;border-radius:var(--radius-sm);padding:12px 14px;border:1px solid #1D9E75;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:11px;color:#0F6E56;font-weight:600;margin-bottom:3px;">LIVE PRICE</div>
+              <div style="font-family:'DM Mono',monospace;font-size:24px;font-weight:600;color:#0F6E56;" id="angelLivePrice">—</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:10px;color:#64748b;margin-bottom:3px;">Last updated</div>
+              <div style="font-size:11px;font-family:'DM Mono',monospace;color:#64748b;" id="angelLastUpdated">—</div>
+              <div style="font-size:10px;color:#64748b;margin-top:2px;" id="angelUpdateCount">0 updates</div>
+            </div>
+          </div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+
+        <!-- AUTO FETCH CONTROLS -->
+        <div style="background:#fff;border-radius:var(--radius-sm);padding:12px 14px;border:1px solid #1D9E75;margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:600;color:#0F6E56;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">Auto-fetch interval</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;">
+            <button class="af-btn" data-secs="5">5s</button>
+            <button class="af-btn" data-secs="10">10s</button>
+            <button class="af-btn" data-secs="30">30s</button>
+            <button class="af-btn" data-secs="60">60s</button>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-primary" id="autoFetchStartBtn" style="flex:1;background:#0F6E56;">
+              <i class="fa-solid fa-play"></i> Start Auto-fetch
+            </button>
+            <button class="btn-primary" id="fetchPriceBtn" style="width:auto;padding:10px 14px;background:#185FA5;" title="Fetch once">
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+          <div style="font-size:11px;color:#0F6E56;margin-top:8px;text-align:center;" id="autoFetchStatus">
+            Auto-fetch off — tap Start to enable
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="btn-primary" id="sendToAlertsBtn" style="background:#185FA5;flex:1;">
             <i class="fa-solid fa-bell"></i> Send to Alerts
           </button>
-          <button class="btn-primary" id="sendToCalcBtn" style="background:#0F6E56;flex:1;">
+          <button class="btn-primary" id="sendToCalcBtn" style="background:#0C447C;flex:1;">
             <i class="fa-solid fa-calculator"></i> Set as Entry
           </button>
-          <button class="btn-primary" id="angelDisconnect" style="background:var(--red-mid);width:auto;padding:10px 14px;">
+          <button class="btn-primary" id="angelDisconnect" style="background:var(--red-mid);width:auto;padding:10px 14px;" title="Disconnect">
             <i class="fa-solid fa-plug-circle-xmark"></i>
           </button>
         </div>
@@ -1380,6 +1420,10 @@ function saveTrades() { try { localStorage.setItem('psp_trades', JSON.stringify(
 // ══════════════════════════════════════════════
 let angelJwtToken = null;
 let angelAutoRefreshTimer = null;
+let autoFetchInterval = null;
+let autoFetchSecs = 10;
+let autoFetchRunning = false;
+let updateCount = 0;
 
 // Method tab toggle
 document.querySelectorAll('.method-tab').forEach(btn => {
@@ -1469,15 +1513,56 @@ function scheduleAutoRefresh(workerUrl, apiKey, clientId, mpin) {
   }, 23 * 60 * 60 * 1000);
 }
 
-// ── FETCH LIVE PRICE ──
-$('fetchPriceBtn').addEventListener('click', fetchAngelPrice);
+// ── AUTO FETCH INTERVAL BUTTONS ──
+document.querySelectorAll('.af-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.af-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    autoFetchSecs = parseInt(btn.dataset.secs);
+    if (autoFetchRunning) {
+      stopAutoFetch();
+      startAutoFetch();
+    }
+  });
+});
+
+// Set default active
+document.querySelector('.af-btn[data-secs="10"]') && document.querySelector('.af-btn[data-secs="10"]').classList.add('active');
+
+$('autoFetchStartBtn').addEventListener('click', () => {
+  if (autoFetchRunning) { stopAutoFetch(); } else { startAutoFetch(); }
+});
+
+function startAutoFetch() {
+  if (!angelJwtToken) { showToast('Connect to Angel One first', 'warn'); return; }
+  autoFetchRunning = true;
+  updateCount = 0;
+  $('autoFetchStartBtn').innerHTML = '<i class="fa-solid fa-stop"></i> Stop Auto-fetch';
+  $('autoFetchStartBtn').style.background = 'var(--red-mid)';
+  $('autoFetchBadge').style.display = '';
+  $('autoFetchStatus').textContent = 'Fetching every ' + autoFetchSecs + 's — alerts checking automatically';
+  fetchAngelPrice(); // fetch immediately
+  autoFetchInterval = setInterval(fetchAngelPrice, autoFetchSecs * 1000);
+  showToast('Auto-fetch started — every ' + autoFetchSecs + 's', 'check');
+}
+
+function stopAutoFetch() {
+  autoFetchRunning = false;
+  clearInterval(autoFetchInterval);
+  autoFetchInterval = null;
+  $('autoFetchStartBtn').innerHTML = '<i class="fa-solid fa-play"></i> Start Auto-fetch';
+  $('autoFetchStartBtn').style.background = '#0F6E56';
+  $('autoFetchBadge').style.display = 'none';
+  $('autoFetchStatus').textContent = 'Auto-fetch off — tap Start to enable';
+  showToast('Auto-fetch stopped', 'info');
+}
 
 async function fetchAngelPrice() {
   if (!angelJwtToken) { showToast('Not connected to Angel One', 'warn'); return; }
   const symbolToken = $('angelSymbol').value;
   const symbolName  = $('angelSymbol').options[$('angelSymbol').selectedIndex].text;
 
-  $('fetchPriceBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+  if (!autoFetchRunning) $('fetchPriceBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
   try {
     const res = await fetch('https://apiconnect.angelbroking.com/rest/secure/angelbroking/market/v1/quote/', {
@@ -1498,16 +1583,33 @@ async function fetchAngelPrice() {
     const ltp = data?.data?.fetched?.[0]?.ltp;
 
     if (ltp) {
-      $('angelLivePrice').textContent = '₹' + Number(ltp).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+      const price = parseFloat(ltp);
+      // Update price display
+      $('angelLivePrice').textContent = '₹' + price.toLocaleString('en-IN', { maximumFractionDigits: 2 });
       $('angelLivePrice').setAttribute('data-raw', ltp);
-      showToast(symbolName + ': ₹' + Number(ltp).toLocaleString('en-IN'), 'check');
+      // Update last updated time
+      $('angelLastUpdated').textContent = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+      // Update count
+      updateCount++;
+      $('angelUpdateCount') && ($('angelUpdateCount').textContent = updateCount + ' update' + (updateCount > 1 ? 's' : ''));
+      // Also sync to alerts live price field and auto-check
+      $('livePrice').value = price;
+      checkAlerts(price);
+      // Only show toast when not auto-fetching (avoid spam)
+      if (!autoFetchRunning) showToast(symbolName + ': ₹' + price.toLocaleString('en-IN'), 'check');
     } else {
-      showToast('Could not fetch price — token may have expired', 'warn', 4000);
+      if (!autoFetchRunning) showToast('Could not fetch price — token may have expired', 'warn', 4000);
+      else {
+        // Token expired during auto-fetch — stop and notify
+        stopAutoFetch();
+        fireNotification('⚠️ Angel One session expired', 'Open Position Sizer and reconnect with a fresh TOTP');
+        showToast('Session expired — reconnect with new TOTP', 'warn', 5000);
+      }
     }
   } catch(e) {
-    showToast('Network error — check your connection', 'warn');
+    if (!autoFetchRunning) showToast('Network error — check your connection', 'warn');
   }
-  $('fetchPriceBtn').innerHTML = '<i class="fa-solid fa-rotate"></i> Fetch';
+  if (!autoFetchRunning) $('fetchPriceBtn').innerHTML = '<i class="fa-solid fa-rotate"></i>';
 }
 
 // ── SEND PRICE TO ALERTS ──

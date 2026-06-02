@@ -1,4 +1,4 @@
-const CACHE = 'psp-v8-cache-v1';
+const CACHE = 'psp-v9-cache-v1';
 const ASSETS = [
   './',
   './index.html',
