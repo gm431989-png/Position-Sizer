@@ -828,11 +828,11 @@ tr:last-child td{border-bottom:none;}
         <div style="margin-bottom:10px;">
           <div style="font-size:11px;font-weight:600;color:#0F6E56;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Instrument</div>
           <select id="angelSymbol" style="width:100%;font-size:13px;padding:9px 11px;border-radius:var(--radius-sm);border:1px solid #1D9E75;background:#fff;color:#0f172a;font-family:'Sora',sans-serif;">
-            <option value="99926000">Nifty 50</option>
-            <option value="99926009">Bank Nifty</option>
-            <option value="99919000">Sensex</option>
-            <option value="99926074">Fin Nifty</option>
-            <option value="99926013">Midcap Nifty</option>
+            <option value="99926000" data-exchange="NSE">Nifty 50</option>
+            <option value="99926009" data-exchange="NSE">Bank Nifty</option>
+            <option value="99919000" data-exchange="BSE">Sensex</option>
+            <option value="99926074" data-exchange="NSE">Fin Nifty</option>
+            <option value="99926013" data-exchange="NSE">Midcap Nifty</option>
           </select>
         </div>
 
@@ -1561,6 +1561,7 @@ async function fetchAngelPrice() {
   if (!angelJwtToken) { showToast('Not connected to Angel One', 'warn'); return; }
   const symbolToken = $('angelSymbol').value;
   const symbolName  = $('angelSymbol').options[$('angelSymbol').selectedIndex].text;
+  const exchange    = $('angelSymbol').options[$('angelSymbol').selectedIndex].getAttribute('data-exchange') || 'NSE';
 
   if (!autoFetchRunning) $('fetchPriceBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
@@ -1577,7 +1578,7 @@ async function fetchAngelPrice() {
         'X-MACAddress': '00:00:00:00:00:00',
         'X-PrivateKey': loadAngelCreds()?.apiKey || ''
       },
-      body: JSON.stringify({ mode: 'LTP', exchangeTokens: { NSE: [symbolToken] } })
+      body: JSON.stringify({ mode: 'LTP', exchangeTokens: { [exchange]: [symbolToken] } })
     });
     const data = await res.json();
     const ltp = data?.data?.fetched?.[0]?.ltp;
