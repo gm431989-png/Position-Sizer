@@ -814,6 +814,35 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
 
+    <!-- QUICK RECONNECT PANEL (shown when session expires) -->
+    <div id="quickReconnectPanel" style="display:none;margin-top:14px;">
+      <div style="background:#FAEEDA;border:2px solid #EF9F27;border-radius:var(--radius-md);padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <i class="fa-solid fa-rotate" style="color:#854F0B;font-size:18px;"></i>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:#854F0B;">Session Expired</div>
+            <div style="font-size:11px;color:#854F0B;margin-top:1px;">Enter your TOTP to reconnect instantly</div>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:var(--radius-sm);padding:12px;margin-bottom:12px;border:1px solid #EF9F27;">
+          <div style="font-size:11px;font-weight:600;color:#854F0B;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Saved credentials</div>
+          <div style="font-size:12px;color:#64748b;" id="qrSavedInfo">—</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="flex:1;">
+            <input type="text" id="quickTotpInput" placeholder="Enter 6-digit TOTP" maxlength="6" inputmode="numeric"
+              style="width:100%;font-family:'DM Mono',monospace;font-size:20px;letter-spacing:6px;text-align:center;padding:12px;border:2px solid #EF9F27;border-radius:var(--radius-sm);background:#fff;color:#0f172a;outline:none;">
+          </div>
+          <button id="quickReconnectBtn" style="padding:13px 18px;border-radius:var(--radius-sm);background:#E84525;color:#fff;border:none;font-size:14px;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-plug"></i> Connect
+          </button>
+        </div>
+        <div style="font-size:11px;color:#854F0B;margin-top:8px;text-align:center;">
+          <i class="fa-solid fa-clock" style="margin-right:3px;"></i>Open Google Authenticator → copy the 6-digit code → paste above
+        </div>
+      </div>
+    </div>
+
     <!-- CONNECTED STATE -->
     <div id="angelConnectedPanel" style="display:none;margin-top:14px;">
       <div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:var(--radius-md);padding:14px;">
@@ -1502,15 +1531,68 @@ $('angelConnectCf').addEventListener('click', async () => {
 
 function scheduleAutoRefresh(workerUrl, apiKey, clientId, mpin) {
   clearInterval(angelAutoRefreshTimer);
-  // Re-login every 23 hours silently (token expires every 24h)
   angelAutoRefreshTimer = setInterval(async () => {
     try {
-      // Need fresh TOTP — can't auto-generate without secret key
-      // So just show a reminder notification
       fireNotification('⚠️ Angel One token expiring', 'Open Position Sizer and refresh your TOTP to stay connected');
-      showToast('Angel One token expiring — reconnect with new TOTP', 'warn', 6000);
+      showQuickReconnect();
+      showToast('Session expiring — enter TOTP to reconnect', 'warn', 6000);
     } catch(e) {}
   }, 23 * 60 * 60 * 1000);
+}
+
+// ── QUICK RECONNECT ──
+$('quickReconnectBtn').addEventListener('click', quickReconnect);
+$('quickTotpInput').addEventListener('keydown', e => { if (e.key === 'Enter') quickReconnect(); });
+$('quickTotpInput').addEventListener('input', () => {
+  if ($('quickTotpInput').value.length === 6) quickReconnect();
+});
+
+async function quickReconnect() {
+  const totp = $('quickTotpInput').value.trim();
+  if (totp.length !== 6) { showToast('Enter all 6 digits', 'warn'); return; }
+  const creds = loadAngelCreds();
+  if (!creds || creds.method !== 'cloudflare') {
+    showToast('No saved credentials — use Option B below', 'warn'); return;
+  }
+  $('quickReconnectBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+  $('quickReconnectBtn').disabled = true;
+  try {
+    const res = await fetch(creds.workerUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientcode: creds.clientId, password: creds.mpin, totp, apikey: creds.apiKey })
+    });
+    const data = await res.json();
+    if (data?.status && data?.data?.jwtToken) {
+      angelJwtToken = data.data.jwtToken;
+      $('quickReconnectPanel').style.display = 'none';
+      $('quickTotpInput').value = '';
+      showAngelConnected('cloudflare', creds.clientId);
+      showToast('Reconnected successfully!', 'check');
+      if (autoFetchRunning) fetchAngelPrice();
+    } else {
+      showToast('Wrong TOTP — try again with a fresh code', 'warn', 4000);
+      $('quickTotpInput').value = '';
+      $('quickTotpInput').focus();
+    }
+  } catch(e) {
+    showToast('Connection error — check your internet', 'warn');
+  }
+  $('quickReconnectBtn').innerHTML = '<i class="fa-solid fa-plug"></i> Connect';
+  $('quickReconnectBtn').disabled = false;
+}
+
+function showQuickReconnect() {
+  const creds = loadAngelCreds();
+  $('quickReconnectPanel').style.display = '';
+  $('angelConnectedPanel').style.display = 'none';
+  $('angelStatusChip').style.display = 'none';
+  stopAutoFetch();
+  if (creds) {
+    $('qrSavedInfo').textContent =
+      'Client: ' + (creds.clientId || '—') + ' · Worker: ' + (creds.workerUrl ? '✓ saved' : '—');
+  }
+  setTimeout(() => $('quickTotpInput').focus(), 300);
 }
 
 // ── AUTO FETCH INTERVAL BUTTONS ──
@@ -1609,10 +1691,11 @@ async function fetchAngelPrice() {
     } else {
       if (!autoFetchRunning) showToast('Could not fetch price — token may have expired', 'warn', 4000);
       else {
-        // Token expired during auto-fetch — stop and notify
+        // Token expired during auto-fetch — stop and show quick reconnect
         stopAutoFetch();
-        fireNotification('⚠️ Angel One session expired', 'Open Position Sizer and reconnect with a fresh TOTP');
-        showToast('Session expired — reconnect with new TOTP', 'warn', 5000);
+        fireNotification('⚠️ Angel One session expired', 'Open Position Sizer and enter your TOTP to reconnect');
+        showQuickReconnect();
+        showToast('Session expired — enter TOTP to reconnect', 'warn', 5000);
       }
     }
   } catch(e) {
