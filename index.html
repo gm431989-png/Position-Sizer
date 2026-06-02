@@ -1578,10 +1578,18 @@ async function fetchAngelPrice() {
         'X-MACAddress': '00:00:00:00:00:00',
         'X-PrivateKey': loadAngelCreds()?.apiKey || ''
       },
-      body: JSON.stringify({ mode: 'LTP', exchangeTokens: { [exchange]: [symbolToken] } })
+      body: JSON.stringify({ 
+        mode: 'LTP', 
+        exchangeTokens: exchange === 'BSE' 
+          ? { BSE: [symbolToken] } 
+          : { NSE: [symbolToken] } 
+      })
     });
     const data = await res.json();
-    const ltp = data?.data?.fetched?.[0]?.ltp;
+    // Angel One returns fetched array regardless of exchange
+    const fetched = data?.data?.fetched;
+    const ltp = fetched && fetched.length > 0 ? fetched[0]?.ltp : null;
+    if (!ltp) console.warn('Angel One response:', JSON.stringify(data));
 
     if (ltp) {
       const price = parseFloat(ltp);
