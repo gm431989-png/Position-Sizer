@@ -300,6 +300,58 @@ tr:last-child td{border-bottom:none;}
 .af-btn{padding:8px 4px;border:1px solid #1D9E75;border-radius:var(--radius-sm);background:#fff;color:#0F6E56;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;transition:all var(--tr);text-align:center;}
 .af-btn.active{background:#0F6E56;color:#fff;border-color:#0F6E56;}
 .af-btn:not(.active):hover{background:#E1F5EE;}
+
+/* ══ PRE-MARKET BRIEF ══ */
+.nav-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{flex:0 0 auto;white-space:nowrap;padding:10px 10px;}
+.brief-hero{background:linear-gradient(135deg,#060e1a,#0a1830);border-radius:var(--radius-xl);padding:18px;color:#fff;border:1px solid rgba(0,212,255,0.2);position:relative;overflow:hidden;}
+.brief-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,0.1) 0%,transparent 70%);}
+.brief-hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.brief-ist{font-family:'DM Mono',monospace;font-size:14px;color:#00d4ff;font-weight:600;}
+.brief-date-sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px;}
+.brief-session-pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.sp-pre{background:rgba(255,214,0,0.15);color:#ffd600;}.sp-live{background:rgba(0,230,118,0.15);color:#00e676;}
+.sp-post{background:rgba(255,107,53,0.15);color:#ff6b35;}.sp-closed{background:rgba(100,116,139,0.15);color:#94a3b8;}
+.brief-title{font-size:14px;font-weight:700;color:#00d4ff;margin-bottom:2px;letter-spacing:0.3px;}
+.brief-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:12px;}
+.brief-worker-row{display:flex;gap:8px;margin-bottom:8px;}
+.brief-worker-input{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);padding:9px 12px;color:#fff;font-size:12px;font-family:'DM Mono',monospace;outline:none;}
+.brief-worker-input::placeholder{color:rgba(255,255,255,0.3);}
+.brief-worker-input:focus{border-color:rgba(0,212,255,0.5);}
+.brief-test-btn{padding:9px 14px;border-radius:var(--radius-sm);border:1px solid rgba(0,212,255,0.5);background:transparent;color:#00d4ff;font-size:12px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;white-space:nowrap;}
+.brief-worker-status{font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:10px;}
+.brief-run-btn{width:100%;padding:12px;border-radius:var(--radius-md);background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(0,212,255,0.08));border:1px solid #00d4ff;color:#00d4ff;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s;}
+.brief-run-btn:hover{background:rgba(0,212,255,0.2);}.brief-run-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.brief-run-btn .bdot{width:8px;height:8px;border-radius:50%;background:#00d4ff;animation:pulse 1.5s infinite;}
+.brief-progress{height:3px;background:var(--border);border-radius:2px;overflow:hidden;display:none;margin-top:10px;}
+.brief-progress-fill{height:100%;background:linear-gradient(90deg,#00d4ff,#b388ff);border-radius:2px;transition:width 0.5s ease;width:0%;}
+.bsec{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);transition:border-color 0.3s;}
+.bsec.bs-active{border-color:var(--border-strong);}.bsec.bs-done{border-color:rgba(0,230,118,0.25);}
+.bsec-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg-secondary);border-bottom:1px solid var(--border);}
+.bsec-icon{font-size:14px;}.bsec-title{font-size:11px;font-weight:700;color:var(--text-primary);letter-spacing:0.3px;flex:1;text-transform:uppercase;}
+.bsec-tag{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--border);color:var(--text-muted);}
+.bsec-status{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.bss-wait{background:var(--bg-secondary);color:var(--text-muted);border:1px solid var(--border);}
+.bss-loading{background:rgba(0,212,255,0.1);color:#00d4ff;border:1px solid rgba(0,212,255,0.3);}
+.bss-done{background:rgba(0,230,118,0.1);color:#00e676;border:1px solid rgba(0,230,118,0.3);}
+.bss-error{background:rgba(255,61,113,0.1);color:#ff3d71;border:1px solid rgba(255,61,113,0.3);}
+.bsec-body{padding:12px 14px;min-height:50px;font-size:13px;line-height:1.7;color:var(--text-secondary);}
+.bsec-placeholder{font-size:12px;color:var(--text-muted);font-style:italic;}
+.bsec-result{font-size:13px;line-height:1.75;color:var(--text-primary);}
+.bsec-result strong{color:var(--blue-dark);}[data-theme="dark"] .bsec-result strong{color:#60a5fa;}
+.brief-summary-card{border-radius:var(--radius-xl);border:1px solid rgba(0,212,255,0.25);padding:14px;display:none;background:var(--bg-card);}
+.brief-summary-title{font-size:10px;font-weight:700;letter-spacing:2px;color:#00d4ff;margin-bottom:10px;text-transform:uppercase;}
+.bias-display{text-align:center;padding:12px;background:var(--bg-page);border-radius:var(--radius-md);margin-bottom:10px;}
+.bias-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.bias-val{font-family:'DM Mono',monospace;font-size:24px;font-weight:700;}
+.bias-bullish{color:#00e676;}.bias-bearish{color:#ff3d71;}.bias-neutral{color:#ffd600;}
+.brief-kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.brief-kv{background:var(--bg-page);border-radius:var(--radius-md);padding:10px;text-align:center;}
+.brief-kv-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
+.brief-kv-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--text-primary);}
+.bspinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:#00d4ff;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:5px;}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -314,7 +366,7 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
     <div class="header-actions">
-      <span class="version-chip">v5.0</span>
+      <span class="version-chip">v6.0</span>
       <button class="hdr-btn" id="themeBtn" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon" id="themeIcon"></i>
       </button>
@@ -322,6 +374,7 @@ tr:last-child td{border-bottom:none;}
   </div>
   <nav class="nav-tabs">
     <button class="nav-tab active" data-page="calculator"><i class="fa-solid fa-calculator"></i> Calc</button>
+    <button class="nav-tab" data-page="brief"><i class="fa-solid fa-bolt"></i> Brief</button>
     <button class="nav-tab" data-page="alerts"><i class="fa-solid fa-bell"></i> Alerts</button>
     <button class="nav-tab" data-page="pnl"><i class="fa-solid fa-chart-line"></i> P&amp;L</button>
     <button class="nav-tab" data-page="zerodha"><i class="fa-solid fa-plug"></i> Angel One</button>
@@ -430,6 +483,57 @@ tr:last-child td{border-bottom:none;}
   </div>
 
   <div class="footer"><i class="fa-solid fa-lock" style="font-size:10px;"></i> Positions rounded down · risk never breached · settings auto-saved</div>
+</div>
+
+
+<!-- PRE-MARKET BRIEF PAGE -->
+<div class="page" id="page-brief">
+  <div class="brief-hero">
+    <div class="brief-hero-top">
+      <div><div class="brief-ist" id="briefClock">--:--:--</div><div class="brief-date-sub" id="briefDate">IST</div></div>
+      <span class="brief-session-pill sp-closed" id="briefSessionPill">—</span>
+    </div>
+    <div class="brief-title">⚡ BRAHMASTRA PRE-MARKET BRIEF</div>
+    <div class="brief-sub">One tap · Global cues · FII data · AI bias for Nifty</div>
+    <div class="brief-worker-row">
+      <input type="text" class="brief-worker-input" id="workerUrlInput" placeholder="https://angel-proxy.gm431989.workers.dev" onchange="saveWorkerUrl(this.value)">
+      <button class="brief-test-btn" onclick="testWorker()">Test</button>
+    </div>
+    <div class="brief-worker-status" id="workerStatus">Enter your Cloudflare Worker URL above</div>
+    <button class="brief-run-btn" id="mainBtn" onclick="runBrief()"><div class="bdot"></div> RUN PRE-MARKET BRIEF</button>
+    <div class="brief-progress" id="progressBar"><div class="brief-progress-fill" id="progressFill"></div></div>
+  </div>
+  <div class="bsec" id="sec-global">
+    <div class="bsec-hdr"><span class="bsec-icon">🌐</span><span class="bsec-title">Global Market Cues</span><span class="bsec-tag">AI</span><span class="bsec-status bss-wait" id="st-global">WAITING</span></div>
+    <div class="bsec-body" id="bd-global"><div class="bsec-placeholder">SGX Nifty · Dow Futures · Asia · Crude · USDINR</div></div>
+  </div>
+  <div class="bsec" id="sec-events">
+    <div class="bsec-hdr"><span class="bsec-icon">📅</span><span class="bsec-title">Today's Key Events</span><span class="bsec-tag">AI</span><span class="bsec-status bss-wait" id="st-events">WAITING</span></div>
+    <div class="bsec-body" id="bd-events"><div class="bsec-placeholder">RBI · SEBI · Earnings · Expiry · Macro</div></div>
+  </div>
+  <div class="bsec" id="sec-fii">
+    <div class="bsec-hdr"><span class="bsec-icon">💹</span><span class="bsec-title">FII / DII Activity</span><span class="bsec-tag">AI</span><span class="bsec-status bss-wait" id="st-fii">WAITING</span></div>
+    <div class="bsec-body" id="bd-fii"><div class="bsec-placeholder">FII/DII flows · Net buy/sell · Trend</div></div>
+  </div>
+  <div class="bsec" id="sec-vix">
+    <div class="bsec-hdr"><span class="bsec-icon">📊</span><span class="bsec-title">India VIX & Sentiment</span><span class="bsec-tag">AI</span><span class="bsec-status bss-wait" id="st-vix">WAITING</span></div>
+    <div class="bsec-body" id="bd-vix"><div class="bsec-placeholder">India VIX · Put-Call Ratio · Sentiment</div></div>
+  </div>
+  <div class="bsec" id="sec-bias">
+    <div class="bsec-hdr"><span class="bsec-icon">🎯</span><span class="bsec-title">AI Market Bias</span><span class="bsec-tag">CLAUDE</span><span class="bsec-status bss-wait" id="st-bias">WAITING</span></div>
+    <div class="bsec-body" id="bd-bias"><div class="bsec-placeholder">AI synthesis → Bullish / Bearish / Neutral</div></div>
+  </div>
+  <div class="brief-summary-card" id="summaryCard">
+    <div class="brief-summary-title">▸ TODAY'S TRADING BRIEF</div>
+    <div class="bias-display"><div class="bias-lbl">Intraday Bias</div><div class="bias-val bias-neutral" id="biasValue">—</div></div>
+    <div class="brief-kv-grid">
+      <div class="brief-kv"><div class="brief-kv-lbl">Session Type</div><div class="brief-kv-val" id="bkv-session">—</div></div>
+      <div class="brief-kv"><div class="brief-kv-lbl">India VIX</div><div class="brief-kv-val" id="bkv-vix">—</div></div>
+      <div class="brief-kv"><div class="brief-kv-lbl">FII Flow</div><div class="brief-kv-val" id="bkv-fii">—</div></div>
+      <div class="brief-kv"><div class="brief-kv-lbl">Generated</div><div class="brief-kv-val" id="bkv-time">—</div></div>
+    </div>
+  </div>
+  <div class="footer">⚡ Brahmastra AI · NSE/BSE Derivatives · Mysuru</div>
 </div>
 
 <!-- ══════════ ALERTS PAGE ══════════ -->
@@ -1810,6 +1914,154 @@ function load() {
   updateNotifUI(); renderAlerts(); renderTrades(); updateStats(); calc();
   restoreAngelSession();
 }
+
+
+// ══ PRE-MARKET BRIEF FUNCTIONS ══
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function updateBriefClock() {
+  const bc = document.getElementById('briefClock'); if(!bc) return;
+  const ist = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+  bc.textContent = String(ist.getHours()).padStart(2,'0')+':'+String(ist.getMinutes()).padStart(2,'0')+':'+String(ist.getSeconds()).padStart(2,'0');
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('briefDate').textContent=days[ist.getDay()]+', '+ist.getDate()+' '+months[ist.getMonth()]+' '+ist.getFullYear()+' IST';
+  const m=ist.getHours()*60+ist.getMinutes(),pill=document.getElementById('briefSessionPill');
+  if(m>=510&&m<555){pill.textContent='PRE-OPEN';pill.className='brief-session-pill sp-pre';}
+  else if(m>=555&&m<930){pill.textContent='● LIVE';pill.className='brief-session-pill sp-live';}
+  else if(m>=930&&m<960){pill.textContent='POST';pill.className='brief-session-pill sp-post';}
+  else{pill.textContent='CLOSED';pill.className='brief-session-pill sp-closed';}
+}
+setInterval(updateBriefClock,1000); updateBriefClock();
+
+function setStatus(id,type,text){
+  const el=document.getElementById('st-'+id); if(!el)return;
+  el.className='bsec-status bss-'+type; el.textContent=text;
+  const s=document.getElementById('sec-'+id);
+  if(s){s.classList.toggle('bs-active',type==='loading');s.classList.toggle('bs-done',type==='done');}
+}
+function setBody(id,html){const el=document.getElementById('bd-'+id);if(el)el.innerHTML=html;}
+function setProgress(pct){const el=document.getElementById('progressFill');if(el)el.style.width=pct+'%';}
+function loading(id,lbl){setStatus(id,'loading','FETCHING');setBody(id,'<span class="bspinner"></span>'+lbl+'\u2026');}
+function formatResult(t){return '<div class="bsec-result">'+t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')+'</div>';}
+
+function getWorkerUrl(){
+  const d=localStorage.getItem('brief_worker_url')||'';
+  if(d)return d;
+  try{return JSON.parse(localStorage.getItem('psp_angel')||'{}').workerUrl||'';}catch(e){return '';}
+}
+function saveWorkerUrl(url){
+  localStorage.setItem('brief_worker_url',url.trim());
+}
+async function testWorker(){
+  const url=document.getElementById('workerUrlInput').value.trim().replace(/\/$/,'');
+  const s=document.getElementById('workerStatus');
+  if(!url){s.textContent='\u26a0\ufe0f Enter URL first';return;}
+  localStorage.setItem('brief_worker_url',url);
+  s.textContent='\ud83d\udd04 Testing\u2026'; s.style.color='#00d4ff';
+  try{
+    const res=await fetch(url+'/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:20,messages:[{role:'user',content:'Say OK'}]})});
+    const raw=await res.text(); let data;
+    try{data=JSON.parse(raw);}catch(e){s.textContent='\u274c Bad response: '+raw.slice(0,60);s.style.color='#ff3d71';return;}
+    if(data.error){const m=typeof data.error==='object'?JSON.stringify(data.error):String(data.error);s.textContent='\u274c '+m;s.style.color='#ff3d71';return;}
+    if(data.type==='error'){s.textContent='\u274c '+(data.error?.message||JSON.stringify(data.error));s.style.color='#ff3d71';return;}
+    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    if(txt){s.textContent='\u2705 Worker connected! Brief ready.';s.style.color='#00e676';}
+    else{s.textContent='\u26a0\ufe0f HTTP '+res.status+' — '+raw.slice(0,60);s.style.color='#ffd600';}
+  }catch(e){s.textContent='\u274c Cannot reach Worker: '+e.message;s.style.color='#ff3d71';}
+}
+async function callClaude(prompt){
+  const w=getWorkerUrl().replace(/\/$/,'');
+  if(!w)throw new Error('No Worker URL — enter it in the Brief tab first');
+  const res=await fetch(w+'/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:800,messages:[{role:'user',content:prompt}]})});
+  const raw=await res.text(); let data;
+  try{data=JSON.parse(raw);}catch(e){throw new Error('Bad response: '+raw.slice(0,80));}
+  if(data.error){throw new Error(typeof data.error==='object'?JSON.stringify(data.error):String(data.error));}
+  if(data.type==='error'){throw new Error(data.error?.message||JSON.stringify(data.error));}
+  return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+}
+let briefRunning=false;
+async function runBrief(){
+  if(briefRunning)return; briefRunning=true;
+  const btn=document.getElementById('mainBtn');
+  btn.disabled=true; btn.innerHTML='<span class="bspinner"></span> RUNNING BRIEF\u2026';
+  document.getElementById('progressBar').style.display='block';
+  document.getElementById('summaryCard').style.display='none';
+  const today=new Date().toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  try{
+    ['global','events','fii','vix'].forEach(id=>{loading(id,'Fetching data\u2026');});
+    loading('bias','AI analysing\u2026'); setProgress(15);
+    const prompt=`You are a Nifty 50 intraday derivatives trading assistant. Today is ${today} IST. Give a pre-market brief in EXACTLY this format:
+
+GLOBAL:
+- SGX Nifty/Nifty futures trend and rough level
+- US markets last close direction
+- Asian markets (Nikkei, Hang Seng)
+- Crude oil and USDINR approximate levels
+
+EVENTS:
+- RBI/SEBI news, F&O expiry this week, key Indian earnings today
+- If nothing: "No major events — clean session"
+
+FII:
+- Recent FII/DII flow trend (buying/selling/mixed) with approximate figures
+
+VIX:
+- India VIX approximate level and calm/volatile assessment
+- Nifty options sentiment
+
+BIAS:
+- One word: BULLISH or BEARISH or NEUTRAL
+- Session: TRENDING or SIDEWAYS or VOLATILE
+- FII: BUYING or SELLING or MIXED
+- One sentence trade strategy
+
+Max 3-4 lines per section. Be direct and practical.`;
+    const full=await callClaude(prompt);
+    setProgress(85);
+    function extract(txt,hdr){const r=new RegExp(hdr+'[:\\s]*([\\s\\S]*?)(?=\\n[A-Z]+:|$)','i');const m=txt.match(r);return m?m[1].trim():'';}
+    const gRes=extract(full,'GLOBAL'),eRes=extract(full,'EVENTS'),fRes=extract(full,'FII'),vRes=extract(full,'VIX'),bRes=extract(full,'BIAS');
+    setStatus('global','done','DONE');setBody('global',formatResult(gRes||full));
+    setStatus('events','done','DONE');setBody('events',formatResult(eRes||'—'));
+    setStatus('fii','done','DONE');setBody('fii',formatResult(fRes||'—'));
+    setStatus('vix','done','DONE');setBody('vix',formatResult(vRes||'—'));
+    setStatus('bias','done','DONE');setBody('bias',formatResult(bRes||'—'));
+    setProgress(100);
+    const up=(bRes||full).toUpperCase();
+    let bw='NEUTRAL',bc='bias-neutral';
+    if(up.includes('BULLISH')){bw='BULLISH \u25b2';bc='bias-bullish';}
+    else if(up.includes('BEARISH')){bw='BEARISH \u25bc';bc='bias-bearish';}
+    let sess='—';
+    if(up.includes('TRENDING'))sess='TRENDING';
+    else if(up.includes('SIDEWAYS'))sess='SIDEWAYS';
+    else if(up.includes('VOLATILE'))sess='VOLATILE';
+    let fii='—';
+    if(up.includes('BUYING'))fii='BUYING \u2191';
+    else if(up.includes('SELLING'))fii='SELLING \u2193';
+    else if(up.includes('MIXED'))fii='MIXED \u2194';
+    const vm=(vRes||full).match(/\b(1[0-9]\.[0-9]{1,2}|2[0-9]\.[0-9]{1,2})\b/);
+    document.getElementById('biasValue').textContent=bw;
+    document.getElementById('biasValue').className='bias-val '+bc;
+    document.getElementById('bkv-session').textContent=sess;
+    document.getElementById('bkv-vix').textContent=vm?vm[0]:'CHECK';
+    document.getElementById('bkv-fii').textContent=fii;
+    document.getElementById('bkv-time').textContent=new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'})+' IST';
+    document.getElementById('summaryCard').style.display='';
+  }catch(err){
+    setStatus('bias','error','ERROR');
+    setBody('bias','<div style="color:var(--red-mid);font-size:12px;">\u274c '+err.message+'</div>');
+  }
+  btn.disabled=false; btn.innerHTML='<div class="bdot"></div> \ud83d\udd04 REFRESH BRIEF';
+  briefRunning=false;
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=getWorkerUrl();
+  if(saved){
+    const el=document.getElementById('workerUrlInput');
+    if(el){el.value=saved;const s=document.getElementById('workerStatus');if(s){s.textContent='\u2705 Worker URL loaded';s.style.color='#00e676';}}
+  }
+});
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(e => console.warn('SW:', e));
