@@ -366,7 +366,7 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
     <div class="header-actions">
-      <span class="version-chip">v6.0</span>
+      <span class="version-chip">v7.0</span>
       <button class="hdr-btn" id="themeBtn" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon" id="themeIcon"></i>
       </button>
@@ -520,13 +520,19 @@ tr:last-child td{border-bottom:none;}
     <div class="bsec-body" id="bd-vix"><div class="bsec-placeholder">India VIX · Put-Call Ratio · Sentiment</div></div>
   </div>
   <div class="bsec" id="sec-bias">
-    <div class="bsec-hdr"><span class="bsec-icon">🎯</span><span class="bsec-title">AI Market Bias</span><span class="bsec-tag">CLAUDE</span><span class="bsec-status bss-wait" id="st-bias">WAITING</span></div>
-    <div class="bsec-body" id="bd-bias"><div class="bsec-placeholder">AI synthesis → Bullish / Bearish / Neutral</div></div>
+    <div class="bsec-hdr"><span class="bsec-icon">🎯</span><span class="bsec-title">TRADE PLAN + AI BIAS</span><span class="bsec-tag">CLAUDE</span><span class="bsec-status bss-wait" id="st-bias">WAITING</span></div>
+    <div class="bsec-body" id="bd-bias"><div class="bsec-placeholder">Live price levels → Bullish/Bearish/Neutral + Entry/SL/TP</div></div>
   </div>
   <div class="brief-summary-card" id="summaryCard">
     <div class="brief-summary-title">▸ TODAY'S TRADING BRIEF</div>
     <div class="bias-display"><div class="bias-lbl">Intraday Bias</div><div class="bias-val bias-neutral" id="biasValue">—</div></div>
-    <div class="brief-kv-grid">
+    <div class="brief-kv-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="brief-kv" style="grid-column:span 2;background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.25);">
+        <div class="brief-kv-lbl">📡 LIVE NIFTY PRICE</div>
+        <div class="brief-kv-val" id="liveNiftyRow" style="color:#00e676;font-size:20px;">—</div>
+      </div>
+      <div class="brief-kv"><div class="brief-kv-lbl">🔴 RESISTANCE</div><div class="brief-kv-val" id="bkv-res" style="color:#ff3d71">—</div></div>
+      <div class="brief-kv"><div class="brief-kv-lbl">🟢 SUPPORT</div><div class="brief-kv-val" id="bkv-sup" style="color:#00e676">—</div></div>
       <div class="brief-kv"><div class="brief-kv-lbl">Session Type</div><div class="brief-kv-val" id="bkv-session">—</div></div>
       <div class="brief-kv"><div class="brief-kv-lbl">India VIX</div><div class="brief-kv-val" id="bkv-vix">—</div></div>
       <div class="brief-kv"><div class="brief-kv-lbl">FII Flow</div><div class="brief-kv-val" id="bkv-fii">—</div></div>
@@ -1982,79 +1988,157 @@ async function callClaude(prompt){
   return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
 }
 let briefRunning=false;
-async function runBrief(){
-  if(briefRunning)return; briefRunning=true;
-  const btn=document.getElementById('mainBtn');
-  btn.disabled=true; btn.innerHTML='<span class="bspinner"></span> RUNNING BRIEF\u2026';
-  document.getElementById('progressBar').style.display='block';
-  document.getElementById('summaryCard').style.display='none';
-  const today=new Date().toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  try{
-    ['global','events','fii','vix'].forEach(id=>{loading(id,'Fetching data\u2026');});
-    loading('bias','AI analysing\u2026'); setProgress(15);
-    const prompt=`You are a Nifty 50 intraday derivatives trading assistant. Today is ${today} IST. Give a pre-market brief in EXACTLY this format:
 
-GLOBAL:
-- SGX Nifty/Nifty futures trend and rough level
-- US markets last close direction
-- Asian markets (Nikkei, Hang Seng)
-- Crude oil and USDINR approximate levels
+// ── LIVE NIFTY PRICE FROM ANGEL ONE ──
+async function fetchLiveNiftyPrice() {
+  try {
+    const angelCreds = JSON.parse(localStorage.getItem('psp_angel') || '{}');
+    const jwt = angelJwtToken || angelCreds.jwt || '';
+    const apiKey = angelCreds.apiKey || '';
+    if (!jwt) return null;
+    const res = await fetch('https://apiconnect.angelbroking.com/rest/secure/angelbroking/market/v1/quote/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwt,
+        'X-UserType': 'USER', 'X-SourceID': 'WEB',
+        'X-ClientLocalIP': '127.0.0.1', 'X-ClientPublicIP': '127.0.0.1',
+        'X-MACAddress': '00:00:00:00:00:00', 'X-PrivateKey': apiKey
+      },
+      body: JSON.stringify({ mode: 'LTP', exchangeTokens: { NSE: ['99926000'] } })
+    });
+    const data = await res.json();
+    const ltp = data?.data?.fetched?.[0]?.ltp;
+    return ltp ? parseFloat(ltp) : null;
+  } catch(e) { return null; }
+}
 
-EVENTS:
-- RBI/SEBI news, F&O expiry this week, key Indian earnings today
-- If nothing: "No major events — clean session"
+function calcLevels(price) {
+  if (!price) return null;
+  const atr = price * 0.006;
+  return {
+    price:   Math.round(price),
+    sup1:    Math.round(price - atr * 1.0),
+    sup2:    Math.round(price - atr * 2.0),
+    res1:    Math.round(price + atr * 1.0),
+    res2:    Math.round(price + atr * 2.0),
+    longSL:  Math.round(price - atr * 1.5),
+    shortSL: Math.round(price + atr * 1.5),
+    longT1:  Math.round(price + atr * 1.5),
+    longT2:  Math.round(price + atr * 2.5),
+    longT3:  Math.round(price + atr * 4.0),
+    shortT1: Math.round(price - atr * 1.5),
+    shortT2: Math.round(price - atr * 2.5),
+    shortT3: Math.round(price - atr * 4.0),
+  };
+}
 
-FII:
-- Recent FII/DII flow trend (buying/selling/mixed) with approximate figures
+async function runBrief() {
+  if(briefRunning) return;
+  briefRunning = true;
+  const btn = document.getElementById('mainBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="bspinner"></span> RUNNING BRIEF\u2026';
+  document.getElementById('progressBar').style.display = 'block';
+  document.getElementById('summaryCard').style.display = 'none';
+  const today = new Date().toLocaleDateString('en-IN', {timeZone:'Asia/Kolkata', weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
-VIX:
-- India VIX approximate level and calm/volatile assessment
-- Nifty options sentiment
+  try {
+    ['global','events','fii','vix'].forEach(id => { loading(id,'Fetching data\u2026'); });
+    loading('bias','AI analysing\u2026');
+    setProgress(10);
 
-BIAS:
-- One word: BULLISH or BEARISH or NEUTRAL
-- Session: TRENDING or SIDEWAYS or VOLATILE
-- FII: BUYING or SELLING or MIXED
-- One sentence trade strategy
+    // STEP 1: Fetch live Nifty price
+    setBody('global','<span class="bspinner"></span> Fetching live Nifty price from Angel One\u2026');
+    const livePrice = await fetchLiveNiftyPrice();
+    const lvls = calcLevels(livePrice);
 
-Max 3-4 lines per section. Be direct and practical.`;
-    const full=await callClaude(prompt);
+    let priceContext = '';
+    let levelBlock = '';
+
+    if (lvls) {
+      priceContext = 'LIVE NIFTY PRICE (just fetched): \u20b9' + lvls.price;
+      levelBlock = 'PRICE-BASED LEVELS (use these exact numbers):\n- Support: ' + lvls.sup1 + ' / ' + lvls.sup2 + '\n- Resistance: ' + lvls.res1 + ' / ' + lvls.res2 + '\n- Long SL: below ' + lvls.longSL + ' | T1: ' + lvls.longT1 + ' T2: ' + lvls.longT2 + ' T3: ' + lvls.longT3 + '\n- Short SL: above ' + lvls.shortSL + ' | T1: ' + lvls.shortT1 + ' T2: ' + lvls.shortT2 + ' T3: ' + lvls.shortT3;
+      setBody('global','<div class="bsec-result"><span style="color:#00e676;font-weight:700;">\u2705 Live Price: \u20b9' + lvls.price + '</span><br>Generating brief with live levels\u2026</div>');
+      // Show live price in summary immediately
+      const lnr = document.getElementById('liveNiftyRow');
+      if (lnr) { lnr.textContent = '\u20b9' + lvls.price.toLocaleString('en-IN'); }
+      const res_el = document.getElementById('bkv-res');
+      if (res_el) res_el.textContent = '\u20b9' + lvls.res1 + ' / ' + lvls.res2;
+      const sup_el = document.getElementById('bkv-sup');
+      if (sup_el) sup_el.textContent = '\u20b9' + lvls.sup1 + ' / ' + lvls.sup2;
+    } else {
+      priceContext = 'Angel One not connected. Use approximate Nifty level from your knowledge for ' + today + '.';
+      levelBlock = 'Give approximate support/resistance based on recent Nifty range.';
+      setBody('global','<div class="bsec-result"><span style="color:#ffd600;">\u26a0\ufe0f Angel One not connected \u2014 using AI knowledge for levels</span></div>');
+    }
+
+    setProgress(30);
+
+    // STEP 2: One Claude call with live price
+    const masterPrompt = 'You are Brahmastra AI, Nifty 50 intraday derivatives assistant for a trader in Mysuru, India.\nToday: ' + today + ' IST.\n' + priceContext + '\n' + levelBlock + '\n\nProvide pre-market brief in EXACTLY this format:\n\nGLOBAL:\n- SGX Nifty/Nifty futures trend\n- US markets last close direction\n- Asian markets (Nikkei, Hang Seng)\n- Crude oil and USDINR\n\nEVENTS:\n- RBI/SEBI news, F&O expiry, key earnings today\n- If nothing: "No major events — clean session"\n\nFII:\n- Recent FII/DII flow trend with rough figures\n\nVIX:\n- India VIX level and calm/volatile assessment\n- Options sentiment\n\nTRADE PLAN:\n- BIAS: BULLISH or BEARISH or NEUTRAL\n- SESSION: TRENDING or SIDEWAYS or VOLATILE\n- Long setup: entry zone, SL, T1, T2 (USE EXACT LEVELS PROVIDED)\n- Short setup: entry zone, SL, T1, T2 (USE EXACT LEVELS PROVIDED)\n- Key rule for today\n\n3-4 lines per section. Use live price levels ONLY — never invent levels.';
+
+    const fullRes = await callClaude(masterPrompt);
     setProgress(85);
-    function extract(txt,hdr){const r=new RegExp(hdr+'[:\\s]*([\\s\\S]*?)(?=\\n[A-Z]+:|$)','i');const m=txt.match(r);return m?m[1].trim():'';}
-    const gRes=extract(full,'GLOBAL'),eRes=extract(full,'EVENTS'),fRes=extract(full,'FII'),vRes=extract(full,'VIX'),bRes=extract(full,'BIAS');
-    setStatus('global','done','DONE');setBody('global',formatResult(gRes||full));
-    setStatus('events','done','DONE');setBody('events',formatResult(eRes||'—'));
-    setStatus('fii','done','DONE');setBody('fii',formatResult(fRes||'—'));
-    setStatus('vix','done','DONE');setBody('vix',formatResult(vRes||'—'));
-    setStatus('bias','done','DONE');setBody('bias',formatResult(bRes||'—'));
+
+    // STEP 3: Parse sections
+    function extract(txt, hdr) {
+      const r = new RegExp(hdr + '[:\\s]*([\\s\\S]*?)(?=\\n[A-Z ]+:|$)', 'i');
+      const m = txt.match(r);
+      return m ? m[1].trim() : '';
+    }
+
+    const gRes = extract(fullRes,'GLOBAL');
+    const eRes = extract(fullRes,'EVENTS');
+    const fRes = extract(fullRes,'FII');
+    const vRes = extract(fullRes,'VIX');
+    const tRes = extract(fullRes,'TRADE PLAN');
+    const bRes = tRes || fullRes;
+
+    const globalDisplay = lvls
+      ? '<div class="bsec-result"><span style="color:#00e676;font-weight:700;">\u2705 Live: \u20b9' + lvls.price + '</span><br><br>' + gRes.replace(/\n/g,'<br>') + '</div>'
+      : formatResult(gRes || fullRes);
+
+    setStatus('global','done','DONE'); setBody('global', globalDisplay);
+    setStatus('events','done','DONE'); setBody('events', formatResult(eRes || '\u2014'));
+    setStatus('fii',   'done','DONE'); setBody('fii',    formatResult(fRes || '\u2014'));
+    setStatus('vix',   'done','DONE'); setBody('vix',    formatResult(vRes || '\u2014'));
+    setStatus('bias',  'done','DONE'); setBody('bias',   formatResult(tRes || bRes));
     setProgress(100);
-    const up=(bRes||full).toUpperCase();
-    let bw='NEUTRAL',bc='bias-neutral';
-    if(up.includes('BULLISH')){bw='BULLISH \u25b2';bc='bias-bullish';}
-    else if(up.includes('BEARISH')){bw='BEARISH \u25bc';bc='bias-bearish';}
-    let sess='—';
-    if(up.includes('TRENDING'))sess='TRENDING';
-    else if(up.includes('SIDEWAYS'))sess='SIDEWAYS';
-    else if(up.includes('VOLATILE'))sess='VOLATILE';
-    let fii='—';
-    if(up.includes('BUYING'))fii='BUYING \u2191';
-    else if(up.includes('SELLING'))fii='SELLING \u2193';
-    else if(up.includes('MIXED'))fii='MIXED \u2194';
-    const vm=(vRes||full).match(/\b(1[0-9]\.[0-9]{1,2}|2[0-9]\.[0-9]{1,2})\b/);
-    document.getElementById('biasValue').textContent=bw;
-    document.getElementById('biasValue').className='bias-val '+bc;
-    document.getElementById('bkv-session').textContent=sess;
-    document.getElementById('bkv-vix').textContent=vm?vm[0]:'CHECK';
-    document.getElementById('bkv-fii').textContent=fii;
-    document.getElementById('bkv-time').textContent=new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'})+' IST';
-    document.getElementById('summaryCard').style.display='';
-  }catch(err){
+
+    // STEP 4: Summary card
+    const up = bRes.toUpperCase();
+    let bw = 'NEUTRAL', bc = 'bias-neutral';
+    if(up.includes('BULLISH')){ bw='BULLISH \u25b2'; bc='bias-bullish'; }
+    else if(up.includes('BEARISH')){ bw='BEARISH \u25bc'; bc='bias-bearish'; }
+    let sess = '\u2014';
+    if(up.includes('TRENDING')) sess='TRENDING';
+    else if(up.includes('SIDEWAYS')) sess='SIDEWAYS';
+    else if(up.includes('VOLATILE')) sess='VOLATILE';
+    let fii = '\u2014';
+    if(up.includes('BUYING')) fii='BUYING \u2191';
+    else if(up.includes('SELLING')) fii='SELLING \u2193';
+    else if(up.includes('MIXED')) fii='MIXED \u2194';
+    const vm = (vRes||fullRes).match(/\b(1[0-9]\.[0-9]{1,2}|2[0-9]\.[0-9]{1,2})\b/);
+
+    document.getElementById('biasValue').textContent = bw;
+    document.getElementById('biasValue').className = 'bias-val ' + bc;
+    document.getElementById('bkv-session').textContent = sess;
+    document.getElementById('bkv-vix').textContent = vm ? vm[0] : 'CHECK';
+    document.getElementById('bkv-fii').textContent = fii;
+    document.getElementById('bkv-time').textContent = new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit'})+' IST';
+    document.getElementById('summaryCard').style.display = '';
+
+  } catch(err) {
     setStatus('bias','error','ERROR');
     setBody('bias','<div style="color:var(--red-mid);font-size:12px;">\u274c '+err.message+'</div>');
   }
-  btn.disabled=false; btn.innerHTML='<div class="bdot"></div> \ud83d\udd04 REFRESH BRIEF';
-  briefRunning=false;
+
+  btn.disabled = false;
+  btn.innerHTML = '<div class="bdot"></div> \ud83d\udd04 REFRESH BRIEF';
+  briefRunning = false;
 }
+
 window.addEventListener('DOMContentLoaded',()=>{
   const saved=getWorkerUrl();
   if(saved){
