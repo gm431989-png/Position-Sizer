@@ -1,4 +1,4 @@
-const CACHE = 'psp-v7.0';
+const CACHE = 'psp-v7.1';
 const ASSETS = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -9,5 +9,5 @@ self.addEventListener('activate', e => {
   ).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', e => {
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('./index.html'))));
+  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
 });
