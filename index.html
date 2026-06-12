@@ -352,6 +352,64 @@ tr:last-child td{border-bottom:none;}
 .brief-kv-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--text-primary);}
 .bspinner{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:#00d4ff;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:5px;}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══ SIGNAL LOG ══ */
+.slog-hero{background:linear-gradient(135deg,#0a0f1a,#0d1525);border-radius:var(--radius-xl);padding:16px;border:1px solid rgba(179,136,255,0.25);position:relative;overflow:hidden;}
+.slog-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(179,136,255,0.1) 0%,transparent 70%);}
+.slog-hero-title{font-size:14px;font-weight:700;color:#b388ff;margin-bottom:2px;letter-spacing:0.3px;}
+.slog-hero-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:12px;}
+.slog-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.slog-stat{background:rgba(255,255,255,0.05);border-radius:var(--radius-md);padding:10px 8px;text-align:center;}
+.slog-stat-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:#b388ff;}
+.slog-stat-lbl{font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+.slog-stat.s-green .slog-stat-val{color:#00e676;}.slog-stat.s-red .slog-stat-val{color:#ff3d71;}.slog-stat.s-amber .slog-stat-val{color:#ffd600;}
+.slog-form-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:16px;}
+.slog-form-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+.slog-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.slog-span2{grid-column:span 2;}
+.slog-seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:3px;gap:2px;}
+.slog-seg-btn{padding:7px 4px;border:none;background:transparent;border-radius:var(--radius-sm);font-size:11px;font-weight:600;font-family:'Sora',sans-serif;color:var(--text-secondary);cursor:pointer;text-align:center;transition:all var(--tr);}
+.slog-seg-btn.active-long{background:#0F6E56;color:#fff;}.slog-seg-btn.active-short{background:#A32D2D;color:#fff;}.slog-seg-btn.active-skip{background:#854F0B;color:#fff;}
+.slog-outcome-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.slog-out-btn{padding:8px 4px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--bg-card);font-size:11px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;text-align:center;transition:all var(--tr);color:var(--text-secondary);}
+.slog-out-btn.o-win{border-color:var(--green-mid);background:var(--green-bg);color:var(--green-dark);}
+.slog-out-btn.o-loss{border-color:var(--red-mid);background:var(--red-bg);color:var(--red-dark);}
+.slog-out-btn.o-be{border-color:var(--amber-mid);background:var(--amber-bg);color:var(--amber-dark);}
+.slog-out-btn.o-skip{border-color:var(--text-muted);background:var(--bg-secondary);color:var(--text-muted);}
+.slog-tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.slog-tag{padding:5px 10px;border-radius:20px;border:1px solid var(--border-strong);background:var(--bg-secondary);font-size:11px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all var(--tr);font-family:'Sora',sans-serif;}
+.slog-tag.active{background:var(--blue-darker);color:#bfdbfe;border-color:var(--blue-darker);}
+.slog-calc-box{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:4px;}
+.slog-calc-label{font-size:12px;color:var(--text-secondary);}
+.slog-calc-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;}
+.slog-item{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px;}
+.slog-item-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg-secondary);}
+.slog-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.slog-dot-win{background:#00e676;}.slog-dot-loss{background:#ff3d71;}.slog-dot-be{background:#ffd600;}.slog-dot-skip{background:#64748b;}
+.slog-item-name{font-size:13px;font-weight:700;color:var(--text-primary);flex:1;}
+.slog-item-pnl{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;}
+.slog-item-pnl.pos{color:var(--green-mid);}.slog-item-pnl.neg{color:var(--red-mid);}.slog-item-pnl.zero{color:var(--amber-mid);}
+.slog-item-del{width:28px;height:28px;border:none;background:none;color:var(--text-muted);cursor:pointer;border-radius:6px;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.slog-item-del:hover{background:var(--red-bg);color:var(--red-mid);}
+.slog-item-body{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);}
+.slog-cell{padding:8px 10px;border-right:1px solid var(--border);font-size:11px;}.slog-cell:last-child{border-right:none;}
+.slog-cell-lbl{color:var(--text-muted);margin-bottom:2px;font-size:10px;}
+.slog-cell-val{font-family:'DM Mono',monospace;font-weight:600;color:var(--text-primary);font-size:12px;}
+.slog-item-tags{padding:8px 14px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:5px;}
+.slog-tag-pill{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:var(--blue-bg);color:var(--blue-dark);font-family:'DM Mono',monospace;}
+.slog-analysis{background:linear-gradient(135deg,var(--bg-card),var(--bg-secondary));border:1px solid rgba(179,136,255,0.2);border-radius:var(--radius-xl);padding:14px;}
+.slog-analysis-title{font-size:10px;font-weight:700;letter-spacing:2px;color:#b388ff;margin-bottom:12px;text-transform:uppercase;}
+.slog-pattern-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.slog-pattern-box{background:var(--bg-page);border-radius:var(--radius-md);padding:10px;}
+.slog-pattern-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.slog-pattern-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px;}
+.slog-pattern-item:last-child{border-bottom:none;}
+.slog-pattern-key{color:var(--text-secondary);}
+.slog-pattern-pct{font-family:'DM Mono',monospace;font-weight:700;font-size:12px;}
+.slog-agent-btn{width:100%;padding:12px;border-radius:var(--radius-md);background:linear-gradient(135deg,rgba(179,136,255,0.15),rgba(179,136,255,0.08));border:1px solid #b388ff;color:#b388ff;font-family:'Sora',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;margin-top:10px;}
+.slog-agent-btn:hover{background:rgba(179,136,255,0.2);}.slog-agent-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.slog-ai-result{margin-top:10px;padding:12px;background:var(--bg-page);border-radius:var(--radius-md);border:1px solid rgba(179,136,255,0.2);font-size:12px;line-height:1.7;color:var(--text-primary);display:none;}
+
 </style>
 </head>
 <body>
@@ -366,7 +424,7 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
     <div class="header-actions">
-      <span class="version-chip">v7.0</span>
+      <span class="version-chip">v7.1</span>
       <button class="hdr-btn" id="themeBtn" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon" id="themeIcon"></i>
       </button>
@@ -377,6 +435,7 @@ tr:last-child td{border-bottom:none;}
     <button class="nav-tab" data-page="brief"><i class="fa-solid fa-bolt"></i> Brief</button>
     <button class="nav-tab" data-page="alerts"><i class="fa-solid fa-bell"></i> Alerts</button>
     <button class="nav-tab" data-page="pnl"><i class="fa-solid fa-chart-line"></i> P&amp;L</button>
+    <button class="nav-tab" data-page="slog"><i class="fa-solid fa-robot"></i> Log</button>
     <button class="nav-tab" data-page="zerodha"><i class="fa-solid fa-plug"></i> Angel One</button>
   </nav>
 </header>
@@ -541,6 +600,103 @@ tr:last-child td{border-bottom:none;}
   </div>
   <div class="footer">⚡ Brahmastra AI · NSE/BSE Derivatives · Mysuru</div>
 </div>
+
+
+<!-- SIGNAL LOG PAGE -->
+<div class="page" id="page-slog">
+  <div class="slog-hero">
+    <div class="slog-hero-title">🤖 SIGNAL LOG — Agent Training Data</div>
+    <div class="slog-hero-sub">Log every signal → AI finds your winning setup → Build the agent</div>
+    <div class="slog-stats-row">
+      <div class="slog-stat s-green"><div class="slog-stat-val" id="sl-wins">0</div><div class="slog-stat-lbl">Wins</div></div>
+      <div class="slog-stat s-red"><div class="slog-stat-val" id="sl-losses">0</div><div class="slog-stat-lbl">Losses</div></div>
+      <div class="slog-stat s-amber"><div class="slog-stat-val" id="sl-winrate">0%</div><div class="slog-stat-lbl">Win Rate</div></div>
+      <div class="slog-stat"><div class="slog-stat-val" id="sl-total">0</div><div class="slog-stat-lbl">Signals</div></div>
+    </div>
+  </div>
+  <div class="slog-form-card">
+    <div class="slog-form-title"><i class="fa-solid fa-plus" style="color:#b388ff;font-size:12px;"></i> Log Signal</div>
+    <div class="slog-grid">
+      <div class="field"><label class="field-label"><i class="fa-solid fa-calendar"></i> Date</label><input type="date" id="sl-date" style="font-family:'Sora',sans-serif;font-size:13px;"></div>
+      <div class="field"><label class="field-label"><i class="fa-solid fa-clock"></i> Time (IST)</label><input type="text" id="sl-time" placeholder="e.g. 09:25" style="font-family:'DM Mono',monospace;font-size:14px;"></div>
+      <div class="field slog-span2">
+        <label class="field-label"><i class="fa-solid fa-tag"></i> Signal Type</label>
+        <div class="slog-seg" id="sl-sig-seg">
+          <button class="slog-seg-btn" data-sig="SELL ZONE">🔴 SELL ZONE</button>
+          <button class="slog-seg-btn" data-sig="BUY ZONE">🟢 BUY ZONE</button>
+          <button class="slog-seg-btn" data-sig="SAG CROSS ▼">🔵 SAG ▼</button>
+          <button class="slog-seg-btn" data-sig="SAG CROSS ▲">🔵 SAG ▲</button>
+          <button class="slog-seg-btn" data-sig="JW BUY">⚡ JW BUY</button>
+          <button class="slog-seg-btn" data-sig="JW SELL">⚡ JW SELL</button>
+        </div>
+      </div>
+      <div class="field slog-span2">
+        <label class="field-label"><i class="fa-solid fa-arrows-up-down"></i> Direction Taken</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+          <button class="slog-seg-btn" id="sl-dir-long" onclick="slSetDir('LONG')">▲ LONG</button>
+          <button class="slog-seg-btn" id="sl-dir-short" onclick="slSetDir('SHORT')">▼ SHORT</button>
+          <button class="slog-seg-btn" id="sl-dir-skip" onclick="slSetDir('SKIP')">⏭ SKIP</button>
+        </div>
+      </div>
+      <div class="field"><label class="field-label"><i class="fa-solid fa-crosshairs"></i> Entry Price</label><input type="number" id="sl-entry" placeholder="e.g. 23423" inputmode="numeric" oninput="slCalcPnl()"></div>
+      <div class="field"><label class="field-label"><i class="fa-solid fa-flag-checkered"></i> Exit Price</label><input type="number" id="sl-exit" placeholder="e.g. 23330" inputmode="numeric" oninput="slCalcPnl()"></div>
+      <div class="field"><label class="field-label"><i class="fa-solid fa-shield-halved"></i> SL (pts)</label><input type="number" id="sl-sl" placeholder="e.g. 51" inputmode="numeric"></div>
+      <div class="field"><label class="field-label"><i class="fa-solid fa-layer-group"></i> Lots</label><input type="number" id="sl-lots" placeholder="e.g. 1" value="1" inputmode="numeric" oninput="slCalcPnl()"></div>
+      <div class="field slog-span2">
+        <label class="field-label"><i class="fa-solid fa-chart-bar"></i> Conditions at Signal</label>
+        <div class="slog-tag-row">
+          <button class="slog-tag" data-cond="Day:QUIET" onclick="slToggleTag(this)">QUIET Day</button>
+          <button class="slog-tag" data-cond="Day:NORMAL" onclick="slToggleTag(this)">NORMAL Day</button>
+          <button class="slog-tag" data-cond="Day:JACKPOT" onclick="slToggleTag(this)">JACKPOT Day</button>
+          <button class="slog-tag" data-cond="VWAP:Above" onclick="slToggleTag(this)">VWAP Above</button>
+          <button class="slog-tag" data-cond="VWAP:Below" onclick="slToggleTag(this)">VWAP Below</button>
+          <button class="slog-tag" data-cond="MTF:Bull" onclick="slToggleTag(this)">MTF Bull</button>
+          <button class="slog-tag" data-cond="MTF:Bear" onclick="slToggleTag(this)">MTF Bear</button>
+          <button class="slog-tag" data-cond="SAG:Bullish" onclick="slToggleTag(this)">SAG Bullish</button>
+          <button class="slog-tag" data-cond="SAG:Bearish" onclick="slToggleTag(this)">SAG Bearish</button>
+          <button class="slog-tag" data-cond="RSI:OB" onclick="slToggleTag(this)">RSI OB &gt;70</button>
+          <button class="slog-tag" data-cond="RSI:OS" onclick="slToggleTag(this)">RSI OS &lt;30</button>
+          <button class="slog-tag" data-cond="RSI:Neutral" onclick="slToggleTag(this)">RSI Neutral</button>
+          <button class="slog-tag" data-cond="Vol:Surge" onclick="slToggleTag(this)">Vol Surge🔥</button>
+          <button class="slog-tag" data-cond="Vol:Above" onclick="slToggleTag(this)">Vol Above</button>
+          <button class="slog-tag" data-cond="Vol:Below" onclick="slToggleTag(this)">Vol Below</button>
+          <button class="slog-tag" data-cond="GapUp" onclick="slToggleTag(this)">Gap Up</button>
+          <button class="slog-tag" data-cond="GapDown" onclick="slToggleTag(this)">Gap Down</button>
+          <button class="slog-tag" data-cond="OpenFlat" onclick="slToggleTag(this)">Open Flat</button>
+        </div>
+      </div>
+      <div class="field slog-span2">
+        <label class="field-label"><i class="fa-solid fa-circle-half-stroke"></i> Outcome</label>
+        <div class="slog-outcome-row">
+          <button class="slog-out-btn" id="sl-out-win"  onclick="slSetOut('WIN')">&#x2705; Win</button>
+          <button class="slog-out-btn" id="sl-out-loss" onclick="slSetOut('LOSS')">&#x274c; Loss</button>
+          <button class="slog-out-btn" id="sl-out-be"   onclick="slSetOut('BE')">&#x3030;&#xfe0f; BE</button>
+          <button class="slog-out-btn" id="sl-out-skip" onclick="slSetOut('SKIP')">&#x23ed; Skipped</button>
+        </div>
+      </div>
+      <div class="slog-calc-box slog-span2">
+        <span class="slog-calc-label">Calculated P&amp;L:</span>
+        <span class="slog-calc-val" id="sl-calc-pnl" style="color:var(--text-primary);">&#x20b9;0</span>
+      </div>
+      <div class="field slog-span2"><label class="field-label"><i class="fa-solid fa-note-sticky"></i> Notes / Reason</label><input type="text" id="sl-notes" placeholder="e.g. Gap up, RSI OB, clean rejection at resistance..." style="font-family:'Sora',sans-serif;font-size:13px;"></div>
+    </div>
+    <button class="btn-primary" onclick="slSave()" style="margin-top:12px;background:linear-gradient(135deg,#5b21b6,#7c3aed);"><i class="fa-solid fa-floppy-disk"></i> Save Signal</button>
+  </div>
+  <div class="slog-analysis" id="slAnalysisCard" style="display:none;">
+    <div class="slog-analysis-title">&#x1f916; AI Pattern Analysis</div>
+    <div class="slog-pattern-row" id="slPatternGrid"></div>
+    <button class="slog-agent-btn" id="slAgentBtn" onclick="slRunAI()"><i class="fa-solid fa-robot"></i> Analyze My Winning Setup (Need 10+ signals)</button>
+    <div class="slog-ai-result" id="slAiResult"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-list" style="color:#b388ff;"></i> Signal History
+      <span id="sl-count-badge" style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;background:rgba(179,136,255,0.15);color:#b388ff;padding:2px 8px;border-radius:20px;">0</span>
+      <button onclick="slExportCSV()" style="margin-left:8px;padding:4px 10px;border-radius:20px;border:1px solid var(--border-strong);background:var(--bg-card);font-size:11px;font-weight:600;font-family:'Sora',sans-serif;cursor:pointer;color:var(--text-secondary);"><i class="fa-solid fa-download"></i> CSV</button>
+    </div>
+    <div id="sl-list"><div class="empty-state"><div class="empty-icon" style="font-size:32px;">&#x1f916;</div><div class="empty-title">No signals logged yet</div><div class="empty-sub">Log 10 signals &rarr; AI finds your winning pattern &rarr; Build the agent</div></div></div>
+  </div>
+</div>
+
 
 <!-- ══════════ ALERTS PAGE ══════════ -->
 <div class="page" id="page-alerts">
@@ -1919,6 +2075,7 @@ function load() {
   $('tDate').value = new Date().toISOString().split('T')[0];
   updateNotifUI(); renderAlerts(); renderTrades(); updateStats(); calc();
   restoreAngelSession();
+  slLoadSignals();
 }
 
 
@@ -2146,6 +2303,152 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(el){el.value=saved;const s=document.getElementById('workerStatus');if(s){s.textContent='\u2705 Worker URL loaded';s.style.color='#00e676';}}
   }
 });
+
+
+// ══ SIGNAL LOG ══
+let slSignals = [];
+let slDir = '';
+let slOut = '';
+let slSigType = '';
+let slActiveTags = new Set();
+
+function slSetDir(d) {
+  slDir = d;
+  ['long','short','skip'].forEach(function(x) {
+    var b = document.getElementById('sl-dir-' + x);
+    if (b) b.className = 'slog-seg-btn' + (x.toUpperCase() === d ? ' active-' + x : '');
+  });
+}
+function slSetOut(o) {
+  slOut = o;
+  ['win','loss','be','skip'].forEach(function(x) {
+    var b = document.getElementById('sl-out-' + x);
+    if (b) b.className = 'slog-out-btn' + (x.toUpperCase() === o ? ' o-' + x : '');
+  });
+  slCalcPnl();
+}
+function slToggleTag(btn) {
+  var cond = btn.dataset.cond;
+  if (slActiveTags.has(cond)) { slActiveTags.delete(cond); btn.classList.remove('active'); }
+  else { slActiveTags.add(cond); btn.classList.add('active'); }
+}
+function slCalcPnl() {
+  var entry = parseFloat(document.getElementById('sl-entry').value) || 0;
+  var exit  = parseFloat(document.getElementById('sl-exit').value)  || 0;
+  var lots  = parseFloat(document.getElementById('sl-lots').value)  || 1;
+  var lotSize = 75;
+  var el = document.getElementById('sl-calc-pnl');
+  if (!entry || !exit || slOut === 'SKIP') { if(el){el.textContent='\u20b90';el.style.color='var(--text-primary)';}return; }
+  var pts = slDir === 'SHORT' ? (entry - exit) : (exit - entry);
+  var pnl = Math.round(pts * lots * lotSize);
+  if (el) { el.textContent=(pnl>=0?'+':'')+'\u20b9'+pnl.toLocaleString('en-IN'); el.style.color=pnl>0?'var(--green-mid)':pnl<0?'var(--red-mid)':'var(--amber-mid)'; }
+}
+function slSave() {
+  var date  = document.getElementById('sl-date').value;
+  var time  = document.getElementById('sl-time').value;
+  var entry = parseFloat(document.getElementById('sl-entry').value)||0;
+  var exit  = parseFloat(document.getElementById('sl-exit').value)||0;
+  var sl    = parseFloat(document.getElementById('sl-sl').value)||0;
+  var lots  = parseFloat(document.getElementById('sl-lots').value)||1;
+  var notes = document.getElementById('sl-notes').value.trim();
+  if (!slSigType){showToast('Select a signal type','warn');return;}
+  if (!slDir){showToast('Select direction','warn');return;}
+  if (!slOut){showToast('Select outcome','warn');return;}
+  var pts = slDir==='SHORT'?(entry-exit):(exit-entry);
+  var pnl = slOut==='SKIP'?0:Math.round(pts*lots*75);
+  var signal = {id:Date.now(),date,time,sigType:slSigType,dir:slDir,entry,exit,sl,lots,outcome:slOut,pnl,conditions:[...slActiveTags],notes,rr:sl>0&&entry&&exit?Math.round(Math.abs(exit-entry)/sl*100)/100:null};
+  slSignals.unshift(signal);
+  slSaveData();slRenderList();slUpdateStats();slUpdateAnalysis();
+  document.getElementById('sl-entry').value='';document.getElementById('sl-exit').value='';document.getElementById('sl-sl').value='';document.getElementById('sl-notes').value='';
+  var el=document.getElementById('sl-calc-pnl');if(el){el.textContent='\u20b90';el.style.color='var(--text-primary)';}
+  slDir='';slOut='';slSigType='';slActiveTags=new Set();
+  document.querySelectorAll('.slog-tag.active').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.slog-seg-btn.active-long,.slog-seg-btn.active-short,.slog-seg-btn.active-skip').forEach(function(b){b.className='slog-seg-btn';});
+  document.querySelectorAll('.slog-out-btn').forEach(function(b){b.className='slog-out-btn';});
+  ['long','short','skip'].forEach(function(x){var b=document.getElementById('sl-dir-'+x);if(b)b.className='slog-seg-btn';});
+  document.getElementById('sl-date').value=new Date().toISOString().split('T')[0];
+  var ist=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+  document.getElementById('sl-time').value=String(ist.getHours()).padStart(2,'0')+':'+String(ist.getMinutes()).padStart(2,'0');
+  showToast('Signal logged! '+slSignals.length+' total','check');
+}
+function slDelete(id){slSignals=slSignals.filter(function(s){return s.id!==id;});slSaveData();slRenderList();slUpdateStats();slUpdateAnalysis();}
+function slRenderList(){
+  var list=document.getElementById('sl-list');
+  document.getElementById('sl-count-badge').textContent=slSignals.length;
+  if(slSignals.length===0){list.innerHTML='<div class="empty-state"><div class="empty-icon" style="font-size:32px;">&#x1f916;</div><div class="empty-title">No signals logged yet</div><div class="empty-sub">Log 10 signals \u2192 AI finds your winning pattern</div></div>';return;}
+  var dotMap={WIN:'slog-dot-win',LOSS:'slog-dot-loss',BE:'slog-dot-be',SKIP:'slog-dot-skip'};
+  var pnlMap={WIN:'pos',LOSS:'neg',BE:'zero',SKIP:'zero'};
+  list.innerHTML=slSignals.map(function(s){
+    var pnlStr=s.pnl!==0?(s.pnl>0?'+':'')+'\u20b9'+s.pnl.toLocaleString('en-IN'):s.outcome==='SKIP'?'SKIPPED':'\u20b90';
+    var tags=(s.conditions||[]).map(function(c){return '<span class="slog-tag-pill">'+c+'</span>';}).join('');
+    var dirIcon=s.dir==='LONG'?'\u25b2':s.dir==='SHORT'?'\u25bc':'\u23ed';
+    var rrStr=s.rr?'1:'+s.rr:'\u2014';
+    return '<div class="slog-item"><div class="slog-item-hdr"><div class="slog-dot '+(dotMap[s.outcome]||'slog-dot-skip')+'"></div><div class="slog-item-name">'+dirIcon+' '+s.sigType+' <span style="font-size:10px;color:var(--text-muted);font-weight:400;">'+s.date+' '+s.time+'</span></div><div class="slog-item-pnl '+(pnlMap[s.outcome]||'zero')+'">'+pnlStr+'</div><button class="slog-item-del" onclick="slDelete('+s.id+')"><i class="fa-solid fa-trash-can"></i></button></div><div class="slog-item-body"><div class="slog-cell"><div class="slog-cell-lbl">Entry</div><div class="slog-cell-val">'+(s.entry||'\u2014')+'</div></div><div class="slog-cell"><div class="slog-cell-lbl">Exit</div><div class="slog-cell-val">'+(s.exit||'\u2014')+'</div></div><div class="slog-cell"><div class="slog-cell-lbl">SL pts</div><div class="slog-cell-val">'+(s.sl||'\u2014')+'</div></div><div class="slog-cell"><div class="slog-cell-lbl">R:R</div><div class="slog-cell-val">'+rrStr+'</div></div></div>'+(tags?'<div class="slog-item-tags">'+tags+'</div>':'')+(s.notes?'<div style="padding:6px 14px;font-size:11px;color:var(--text-secondary);border-top:1px solid var(--border);">&#x1f4dd; '+s.notes+'</div>':'')+'</div>';
+  }).join('');
+}
+function slUpdateStats(){
+  var traded=slSignals.filter(function(s){return s.outcome!=='SKIP';});
+  var wins=slSignals.filter(function(s){return s.outcome==='WIN';}).length;
+  var losses=slSignals.filter(function(s){return s.outcome==='LOSS';}).length;
+  var wr=traded.length>0?Math.round(wins/traded.length*100):0;
+  document.getElementById('sl-wins').textContent=wins;
+  document.getElementById('sl-losses').textContent=losses;
+  document.getElementById('sl-winrate').textContent=wr+'%';
+  document.getElementById('sl-total').textContent=slSignals.length;
+}
+function slUpdateAnalysis(){
+  var card=document.getElementById('slAnalysisCard');
+  var btn=document.getElementById('slAgentBtn');
+  if(slSignals.length>=3){
+    card.style.display='';
+    var patterns={};
+    slSignals.forEach(function(s){(s.conditions||[]).forEach(function(c){if(!patterns[c])patterns[c]={total:0,wins:0};patterns[c].total++;if(s.outcome==='WIN')patterns[c].wins++;});});
+    var sorted=Object.entries(patterns).filter(function(e){return e[1].total>=2;}).map(function(e){return {key:e[0],total:e[1].total,wr:Math.round(e[1].wins/e[1].total*100)};}).sort(function(a,b){return b.wr-a.wr;});
+    var grid=document.getElementById('slPatternGrid');
+    if(sorted.length>0){var top=sorted.slice(0,6);grid.innerHTML='<div class="slog-pattern-box" style="grid-column:span 2;"><div class="slog-pattern-lbl">Condition Win Rates</div>'+top.map(function(p){return '<div class="slog-pattern-item"><span class="slog-pattern-key">'+p.key+' ('+p.total+')</span><span class="slog-pattern-pct" style="color:'+(p.wr>=60?'#00e676':p.wr>=40?'#ffd600':'#ff3d71')+'">'+p.wr+'%</span></div>';}).join('')+'</div>';}
+    if(btn){btn.disabled=slSignals.length<10;btn.innerHTML=slSignals.length<10?'<i class="fa-solid fa-robot"></i> Need '+(10-slSignals.length)+' more signals to analyze':'<i class="fa-solid fa-robot"></i> &#x1f916; Analyze My Winning Setup with AI';}
+  } else { card.style.display='none'; }
+}
+async function slRunAI(){
+  var btn=document.getElementById('slAgentBtn');
+  var result=document.getElementById('slAiResult');
+  btn.disabled=true;btn.innerHTML='<span class="bspinner"></span> AI Analyzing\u2026';
+  result.style.display='';result.textContent='Analyzing '+slSignals.length+' signals\u2026';
+  var workerUrl=getWorkerUrl().replace(/\/$/,'');
+  if(!workerUrl){result.textContent='\u274c No Worker URL \u2014 set it in Brief tab first';btn.disabled=false;return;}
+  var summary=slSignals.map(function(s){return s.date+' '+s.time+' | '+s.sigType+' | '+s.dir+' | '+s.outcome+' | PnL:\u20b9'+s.pnl+' | Conditions: '+(s.conditions||[]).join(',')+(s.notes?' | Note: '+s.notes:'');}).join('\n');
+  var prompt='You are an expert trading strategy analyst. Analyze this Nifty 50 intraday signal log from trader Gangadhara in Mysuru, India.\n\nSIGNAL LOG ('+slSignals.length+' signals):\n'+summary+'\n\nAnalyze and provide:\n1. WINNING SETUP: Which signal type + conditions has highest win rate? Give exact rule.\n2. LOSING SETUP: What conditions to AVOID?\n3. BEST TIME: Which time of day works best?\n4. AI AGENT RULE: Write ONE clear if-then rule for a trading bot: IF [conditions] THEN [action] SL=[X]pts T1=[Y]pts\n5. READINESS: Scale 1-10, how ready is this data to build an auto-trading agent?\n\nBe specific with numbers.';
+  try{
+    var res=await fetch(workerUrl+'/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:800,messages:[{role:'user',content:prompt}]})});
+    var data=await res.json();
+    if(data.error)throw new Error(typeof data.error==='object'?JSON.stringify(data.error):data.error);
+    var txt=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
+    result.innerHTML=txt.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  }catch(e){result.textContent='\u274c Error: '+e.message;}
+  btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-robot"></i> &#x1f504; Re-analyze';
+}
+function slExportCSV(){
+  if(slSignals.length===0){showToast('No signals to export','warn');return;}
+  var rows=[['Date','Time','Signal','Direction','Entry','Exit','SL','Lots','Outcome','PnL','RR','Conditions','Notes']];
+  slSignals.forEach(function(s){rows.push([s.date,s.time,s.sigType,s.dir,s.entry||'',s.exit||'',s.sl||'',s.lots||1,s.outcome,s.pnl,s.rr||'',(s.conditions||[]).join('|'),s.notes||'']);});
+  var csv=rows.map(function(r){return r.join(',');}).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='signal_log_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  URL.revokeObjectURL(url);showToast('Signal log exported!','check');
+}
+function slSaveData(){try{localStorage.setItem('psp_signals',JSON.stringify(slSignals));}catch(e){}}
+function slLoadSignals(){
+  try{slSignals=JSON.parse(localStorage.getItem('psp_signals')||'[]');}catch(e){slSignals=[];}
+  // Init date/time fields
+  var sdEl=document.getElementById('sl-date');if(sdEl)sdEl.value=new Date().toISOString().split('T')[0];
+  var stEl=document.getElementById('sl-time');
+  if(stEl){var ist=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));stEl.value=String(ist.getHours()).padStart(2,'0')+':'+String(ist.getMinutes()).padStart(2,'0');}
+  // Init signal type buttons
+  document.querySelectorAll('#sl-sig-seg .slog-seg-btn').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('#sl-sig-seg .slog-seg-btn').forEach(function(b){b.classList.remove('active-long');});btn.classList.add('active-long');slSigType=btn.dataset.sig;});});
+  slRenderList();slUpdateStats();slUpdateAnalysis();
+}
+
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(e => console.warn('SW:', e));
