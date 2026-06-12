@@ -68,8 +68,8 @@ body{
 .hdr-btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all var(--tr);}
 .hdr-btn:hover{background:rgba(255,255,255,0.2);color:#fff;}
 .version-chip{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.2);}
-.nav-tabs{display:flex;gap:0;}
-.nav-tab{flex:1;padding:10px 4px;border:none;background:transparent;color:rgba(255,255,255,0.55);font-size:12px;font-weight:500;font-family:'Sora',sans-serif;cursor:pointer;border-bottom:2px solid transparent;transition:all var(--tr);display:flex;align-items:center;justify-content:center;gap:5px;-webkit-tap-highlight-color:transparent;}
+.nav-tabs{display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.nav-tab{flex:0 0 auto;white-space:nowrap;padding:10px 4px;border:none;background:transparent;color:rgba(255,255,255,0.55);font-size:12px;font-weight:500;font-family:'Sora',sans-serif;cursor:pointer;border-bottom:2px solid transparent;transition:all var(--tr);display:flex;align-items:center;justify-content:center;gap:5px;-webkit-tap-highlight-color:transparent;}
 .nav-tab i{font-size:13px;}
 .nav-tab.active{color:#fff;border-bottom-color:#60a5fa;}
 .nav-tab:hover:not(.active){color:rgba(255,255,255,0.8);}
